@@ -15,3 +15,4 @@ To Nessin by:
 
 * AdminCommands
 * DeathMessage
+* AutoSave

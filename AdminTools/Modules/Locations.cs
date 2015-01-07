@@ -89,7 +89,7 @@ namespace Unturned
             else
             {
                 MapLocations.Add(new Location(locName, _point, rad));
-                if (Configs.UsingDEV) { Get(args); }
+                if (Configs.Developer) { Get(args); }
             }
 
             save();
@@ -152,7 +152,7 @@ namespace Unturned
             }
 
             Reference.Tell(args.sender.networkPlayer, "You are lost, naked and you will be raped.");
-            if (Configs.UsingDEV)
+            if (Configs.Developer)
             {
                 Inventory inventory = args.sender.player.gameObject.GetComponent<Inventory>();
                 if (!inventory.Find(28000).IsXYValid())

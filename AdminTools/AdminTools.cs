@@ -3,6 +3,7 @@ using Ini;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 
@@ -16,8 +17,7 @@ namespace Unturned
         //public string lastUsedCommand = "none";
 
         #endregion
-
-
+        
         public void Start()
         {
 
@@ -27,51 +27,82 @@ namespace Unturned
             // A higher number means you need a higher permission rank to do said command
             // Individual player permission levels can be found in /mods/UserPermissionLevels.ini
 
-            // Basic commands
-            Basics.GetCommands();
-
-            // Location commands
-            Locations.GetCommands();
-
-            // Home commands
-            Homes.GetCommands();
-
-            // Teleport commands
-            Teleports.GetCommands();
-
-            // Ban, Kick, Whitelist commands
-            Bans.GetCommands();
-            Kicks.GetCommands();
-            Whitelists.GetCommands();
-
-            // General moderation commands
-            Announces.GetCommands();
-
-            // Items & Kits commands
-            Items.GetCommands();
-            Kits.GetCommands();
-
-            // Vehicles commands
-            Vehicles.GetCommands();
-
-            // Zombies commands
-            Zombies.GetCommands();
-
-            // Animals commands
-            Animals.GetCommands();
-
-            // Players commands
-            Players.GetCommands();
-            Freezes.GetCommands();
-            Annoying.GetCommands();
-
-            // System commands
-            Configs.GetCommands();
-
-            // Gameplay commands
-            Specials.GetCommands();
-
             Configs.ReadConfigs();
+
+            List<Module> modules = new List<Module>();
+            foreach (Type type in Assembly.GetAssembly(typeof(Module)).GetTypes())
+            {
+                if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(Module)))
+                {
+                    modules.Add((Module)Activator.CreateInstance(type, null));
+                }              
+            }
+            modules.Sort();
+
+            foreach (Module item in modules)
+            {
+                item.GetCommands();
+                item.Load();
+            }
+            
+            ////List<Module> modules;
+            ////modules = System.Reflection.ReflectiveEnumerator.GetEnumerableOfType<Module>();
+            
+            ////foreach (Module item in .GetEnumerator())
+            ////{
+
+            ////}
+
+            ////foreach (Module item in modules)
+            ////{
+            ////    item.a
+            ////}
+
+            //// Basic commands
+            //Basics.GetCommands();
+
+            //// Location commands
+            //Locations.GetCommands();
+
+            //// Home commands
+            //Homes.GetCommands();
+
+            //// Teleport commands
+            //Teleports.GetCommands();
+
+            //// Ban, Kick, Whitelist commands
+            //Bans.GetCommands();
+            //Kicks.GetCommands();
+            //Whitelists.GetCommands();
+
+            //// General moderation commands
+            //Announces.GetCommands();
+
+            //// Items & Kits commands
+            //Items.GetCommands();
+            //Kits.GetCommands();
+
+            //// Vehicles commands
+            //Vehicles.GetCommands();
+
+            //// Zombies commands
+            //Zombies.GetCommands();
+
+            //// Animals commands
+            //Animals.GetCommands();
+
+            //// Players commands
+            //Players.GetCommands();
+            //Freezes.GetCommands();
+            //Annoying.GetCommands();
+
+            //// System commands
+            //Configs.GetCommands();
+
+            //// Gameplay commands
+            //Specials.GetCommands();
+
+            //Configs.ReadConfigs();
 
         }
 
@@ -87,9 +118,9 @@ namespace Unturned
         {
             Whitelists.KickNonWhitelistedPlayers();
 
-            if (Vehicles.respawnVehicles)
+            if (Vehicles.RespawnVehicles)
             {
-                Vehicles.respawnVehicles = false;
+                Vehicles.RespawnVehicles = false;
                 SpawnVehicles spawnveh = UnityEngine.Object.FindObjectOfType<SpawnVehicles>();
                 spawnveh.onReady();
             }
@@ -131,8 +162,7 @@ namespace Unturned
 
         public void OnGUI()
         {
-            if (Configs.UsingGUI)
-            {
+            
                 List<string> console = new List<string>();
                 console.Add(" ");
                 console.Add("Welcome back to Unturned Server!");
@@ -156,7 +186,7 @@ namespace Unturned
                     GUILayout.Label(item);
                 }
                 GUILayout.EndArea();
-            }
+            
         }
 
     }

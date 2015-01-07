@@ -4,19 +4,29 @@ using UnityEngine;
 
 namespace Unturned
 {
-    public static class Animals
+    internal class Animals : Module
     {
 
         #region TOP: global variables are initialized here
 
         #endregion
 
-        internal static void GetCommands()
+        internal override void GetCommands()
         {
             CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "animal", "a"));
             CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnanimals", "ar"));
             CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Kill, "killanimal", "ak"));
             CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Wild, "wild", "aw")); // Use /wild <#>
+        }
+
+        internal override void Load()
+        {
+
+        }
+
+        internal override String GetHelp()
+        {
+            return null;
         }
 
         internal static void Kill(CommandArgs args)

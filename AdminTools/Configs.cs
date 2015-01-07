@@ -11,8 +11,9 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
-        internal static bool UsingGUI = true;
-        internal static bool UsingDEV = false;
+        internal static bool Developer = false;
+        internal static bool AutoSave = false;
+        internal static bool DeathMessage = false;
 
         #endregion
 
@@ -39,22 +40,29 @@ namespace Unturned
         internal static void CreateConfigs()
         {
             string configFile = System.IO.Path.Combine(AdminTools.Path, "config.ini");
-            IniFile tempIni = new IniFile(configFile);
+            IniFile ini = new IniFile(configFile);
 
-            tempIni.IniWriteValue("Config", "Whitelist", "false");
-            tempIni.IniWriteValue("Config", "WhitelistKickMessages", "true");
-            tempIni.IniWriteValue("Config", "Homes", "false");
-            tempIni.IniWriteValue("Config", "Kits", "false");
-            tempIni.IniWriteValue("Config", "Locations", "false");
-            tempIni.IniWriteValue("Config", "GUI", "true");
-            tempIni.IniWriteValue("Config", "Dev", "false");
+            ini.IniWriteValue("Config", "Developer", "false");
+            ini.IniWriteValue("Config", "AutoSave", "0");
+            ini.IniWriteValue("Config", "DeathMessage", "0");
 
-            tempIni.IniWriteValue("Security", "Console", "true");
-            tempIni.IniWriteValue("Security", "Password", randomString(8));
-            tempIni.IniWriteValue("Security", "Confirmation", "false");
+            ini.IniWriteValue("Config", "Whitelist", "false");
+            ini.IniWriteValue("Config", "WhitelistKickMessages", "true");
+            ini.IniWriteValue("Config", "Homes", "false");
+            ini.IniWriteValue("Config", "Kits", "false");
+            ini.IniWriteValue("Config", "Locations", "false");
 
-            tempIni.IniWriteValue("Timers", "RespawnItemInverval", "2700");
-            tempIni.IniWriteValue("Timers", "AnnouncesInterval", "600");
+            ini.IniWriteValue("Timers", "RespawnItem", "false");
+            ini.IniWriteValue("Config", "RespawnVehicles", "false");
+
+            
+
+            ini.IniWriteValue("Security", "Console", "true");
+            ini.IniWriteValue("Security", "Password", randomString(8));
+            ini.IniWriteValue("Security", "Confirmation", "false");
+
+            ini.IniWriteValue("Timers", "RespawnItemInverval", "2700");
+            ini.IniWriteValue("Timers", "AnnouncesInterval", "600");
         }
         internal static void ReadConfigs()
         {
@@ -84,8 +92,7 @@ namespace Unturned
             }
 
             Whitelists.UsingWhitelist = Boolean.Parse(ini.IniReadValue("Config", "Whitelist"));
-            UsingGUI = Boolean.Parse(ini.IniReadValue("Config", "GUI"));
-            UsingDEV = Boolean.Parse(ini.IniReadValue("Config", "Dev"));
+            Developer = Boolean.Parse(ini.IniReadValue("Config", "Developer"));
             Homes.usePlayerHomes = Boolean.Parse(ini.IniReadValue("Config", "Homes"));
             Kits.UsePlayerKits = Boolean.Parse(ini.IniReadValue("Config", "Kits"));
             Locations.UseLocations = Boolean.Parse(ini.IniReadValue("Config", "Locations"));
@@ -126,7 +133,7 @@ namespace Unturned
             }
 
             return builder.ToString();
-        }     
+        }
 
 
     }

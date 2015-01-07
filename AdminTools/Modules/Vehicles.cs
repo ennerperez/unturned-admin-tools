@@ -1,5 +1,6 @@
 ﻿using CommandHandler;
 using System;
+using System.Timers;
 using UnityEngine;
 
 namespace Unturned
@@ -9,7 +10,9 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
-        internal static bool respawnVehicles = false;
+        private static Timer VehiclesTimer;
+        internal static int VehiclesInterval = 600;
+        internal static bool RespawnVehicles = false;
 
         #endregion       
 
@@ -75,7 +78,7 @@ namespace Unturned
             System.Threading.Timer timer;
             timer = new System.Threading.Timer(obj =>
             {
-                respawnVehicles = true;
+                RespawnVehicles = true;
             }, null, 3000, System.Threading.Timeout.Infinite);
 
         }
