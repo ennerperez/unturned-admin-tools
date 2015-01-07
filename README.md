@@ -16,3 +16,22 @@ To Nessin by:
 * AdminCommands
 * DeathMessage
 * AutoSave
+
+###Lisiados 101 feature
+
+* Animals
+* Annouces
+* Annoying
+* Ban
+* Basics
+* Freezes
+* Homes
+* Items
+* Kicks
+* Kits
+* Locations
+* Players
+* Specials
+* Teleports
+* Vehicles
+* Zombies
