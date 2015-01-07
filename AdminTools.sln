@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminTools", "AdminTools\AdminTools.csproj", "{5EF46717-3BEF-4F44-ACF7-6458D83E9290}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "References", "References", "{C6124020-BD72-40E1-BB67-4388B8A2B5C7}"
+	ProjectSection(SolutionItems) = preProject
+		References\Assembly-CSharp-firstpass.dll = References\Assembly-CSharp-firstpass.dll
+		References\Assembly-CSharp.dll = References\Assembly-CSharp.dll
+		References\ModLoader.dll = References\ModLoader.dll
+		References\System.dll = References\System.dll
+		References\UnityEngine.dll = References\UnityEngine.dll
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Server|Any CPU = Server|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5EF46717-3BEF-4F44-ACF7-6458D83E9290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EF46717-3BEF-4F44-ACF7-6458D83E9290}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EF46717-3BEF-4F44-ACF7-6458D83E9290}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EF46717-3BEF-4F44-ACF7-6458D83E9290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EF46717-3BEF-4F44-ACF7-6458D83E9290}.Server|Any CPU.ActiveCfg = Server|Any CPU
+		{5EF46717-3BEF-4F44-ACF7-6458D83E9290}.Server|Any CPU.Build.0 = Server|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
