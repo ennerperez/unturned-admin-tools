@@ -11,14 +11,60 @@ namespace Unturned
 {
     public class DeathMessage : MonoBehaviour
     {
+
+        #region TOP: global variables are initialized here
+
         private FieldInfo[] lifefields = typeof(Life).GetFields();
         private List<Player> announcedDeadPeople = new List<Player>();
         //private Player[] players = UnityEngine.Object.FindObjectsOfType<Player>();
         private float lastupdate = 0f;
 
-        public void Start()
+        internal static bool UseDeathMessage = true;
+
+        #endregion
+
+        internal void Load()
+        {
+            Configs.Load();
+
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseDeathMessage")))
+            {
+                Configs.File.IniWriteValue("Config", "UseDeathMessage", "true");
+            }
+
+            DeathMessage.UseDeathMessage = Boolean.Parse(Configs.File.IniReadValue("Config", "UseDeathMessage"));
+
+            //if (DeathMessage.UseDeathMessage)
+            //{
+            //}
+        }
+        internal static void Create()
         {
         }
+
+        public void Start()
+        {
+            Load();
+        }
+
+        public void Update()
+        {
+            if (DeathMessage.UseDeathMessage)
+            {
+                if (Time.realtimeSinceStartup - this.lastupdate >= 3f)
+                {
+                    Player[] players = UnityEngine.Object.FindObjectsOfType<Player>();
+                    this.lastupdate = Time.realtimeSinceStartup;
+                }
+                this.CheckDeadPlayers();
+            }
+        }
+
+        public void OnGui()
+        {
+        }
+
+        #region Private calls
 
         private void CheckDeadPlayers()
         {
@@ -73,17 +119,8 @@ namespace Unturned
             {
             }
         }
-        public void Update()
-        {
-            if (Time.realtimeSinceStartup - this.lastupdate >= 3f)
-            {
-                Player[] players = UnityEngine.Object.FindObjectsOfType<Player>();
-                this.lastupdate = Time.realtimeSinceStartup;
-            }
-            this.CheckDeadPlayers();
-        }
-        public void OnGui()
-        {
-        }
+
+        #endregion
+
     }
 }

@@ -1,24 +1,33 @@
 ﻿using CommandHandler;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Unturned
 {
-    public static class Players
+    internal class Players : Module
     {
 
         #region TOP: global variables are initialized here
 
         #endregion
 
-        internal static void GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "player", "p")); // Use /player <[playername]>
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnplayers", "pr"));
-            CommandList.add(new Command(PermissionLevel.SuperUser.ToInt(), Skill, "skill", "ps")); // Use skill <[playername,all]>
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Kill, "kill", "pk")); // Use /kill <[playername,all,others]>
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Heal, "heal", "ph")); // Use /heal <[playername,all,others]>
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "player", "p")); // Use /player <[playername]>
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnplayers", "pr"));
+            _return.Add(new Command(PermissionLevel.SuperUser.ToInt(), Skill, "skill", "ps")); // Use skill <[playername,all]>
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Kill, "kill", "pk")); // Use /kill <[playername,all,others]>
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Heal, "heal", "ph")); // Use /heal <[playername,all,others]>
+            return _return;
         }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+        
+        #region Commands
 
         internal static void Spawn(CommandArgs args)
         {
@@ -162,7 +171,7 @@ namespace Unturned
             int amount = 10000;
 
             string[] ns = args.ParametersAsString.Split(' ');
-            if (ns.Length >1) { amount =  int.Parse( ns[ns.Length]); }
+            if (ns.Length > 1) { amount = int.Parse(ns[ns.Length]); }
             if (amount <= 0) { return; }
 
             String msg = "You has been blessed, you learned {0} skill points.";
@@ -224,6 +233,8 @@ namespace Unturned
             Reference.Tell(args.sender.networkPlayer, String.Format("{0} has been promoted to level {1}", naam, UserList.getPermission(user.steamid)));
             Reference.Tell(user.networkPlayer, string.Format("You have been promoted to level {0}", UserList.getPermission(user.steamid)));
         }
+
+        #endregion
 
     }
 }

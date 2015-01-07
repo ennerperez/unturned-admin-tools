@@ -6,54 +6,87 @@ using System.Timers;
 
 namespace Unturned
 {
-    public static class Announces
+    internal class Announces : Module
     {
         #region TOP: global variables are initialized here
 
-        private static Timer AnnounceTimer;
-        internal static int AnnouncesInterval = 600;
-        internal static Stack<String> AnnouncesMessages;
+        private static System.Timers.Timer Timer;
+        internal static int Interval = 600;
+
+        internal static bool UseAnnounces = false;
+
+        internal static Stack<String> Messages;
+
+        private static string fileSource = System.IO.Path.Combine(AdminTools.Path, "announces.txt");
 
         #endregion
 
-        internal static void Load()
+        internal override void Load()
         {
-
-            if (AnnounceTimer != null) // || announceTimer.Enabled)
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseAnnounces")))
             {
-                AnnounceTimer.Enabled = false;
-                AnnounceTimer.Elapsed -= announceTimer_Elapsed;
-                AnnounceTimer.Dispose();
-                AnnounceTimer = null;
+                Configs.File.IniWriteValue("Config", "UseAnnounces", "true");
+                Configs.File.IniWriteValue("Timers", "Announces", "600");
             }
 
-            string fileSource = System.IO.Path.Combine(AdminTools.Path, "announces.txt");
-            if (!File.Exists(fileSource))
-            {
-                Create();
-            }
+            Announces.UseAnnounces = Boolean.Parse(Configs.File.IniReadValue("Config", "UseAnnounces"));
+            Announces.Interval = Int32.Parse(Configs.File.IniReadValue("Timers", "Announces"));
 
-            string[] announces = System.IO.File.ReadAllLines(fileSource);
-            AnnouncesMessages = new Stack<string>(announces);
+            if (Announces.UseAnnounces)
+            {
+                if (Timer != null)
+                {
+                    Timer.Enabled = false;
+                    Timer.Elapsed -= announceTimer_Elapsed;
+                    Timer.Dispose();
+                    Timer = null;
+                }
 
-            if (AnnouncesMessages.Count > 0)
-            {
-                AnnounceTimer = new Timer(AnnouncesInterval * 1000);
-                AnnounceTimer.Elapsed += announceTimer_Elapsed;
-                AnnounceTimer.Enabled = true;
-            }
-            else
-            {
-                AnnouncesMessages = null;
+                if (!File.Exists(fileSource)) { Create(); }
+
+                string[] announces = System.IO.File.ReadAllLines(fileSource);
+                Messages = new Stack<string>(announces);
+
+                if (Messages.Count > 0)
+                {
+                    Timer = new System.Timers.Timer(Announces.Interval * 1000);
+                    Timer.Elapsed += announceTimer_Elapsed;
+                    Timer.Enabled = true;
+                }
+                else
+                {
+                    Messages = null;
+                }
             }
 
         }
-
-        internal static void GetCommands()
+        internal override void Create()
         {
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Announce, "repeat", "say", "announce")); // Use /say <text>
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), SetDelay, "setannouncedelay", "adelay"));
+            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            file.WriteLine("This line will be announced 10 minutes after injecting (or whatever you change the interval to)");
+            file.WriteLine("This line will be announced at the same time");
+            file.WriteLine(":");
+            file.WriteLine("This line will be announced 20 minutes after injecting  (2x interval)");
+            file.WriteLine(":");
+            file.WriteLine(":");
+            file.WriteLine("This line will be announced 40 minutes after injecting  (4x interval)");
+            file.WriteLine("And so forth.. then it will go back to the 1st line      (4x interval)");
+            file.Close();
         }
+
+        internal override IEnumerable<Command> GetCommands()
+        {
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Announce, "repeat", "say", "announce")); // Use /say <text>
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), SetDelay, "setannouncedelay", "adelay"));
+            return _return;
+        }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
 
         internal static void Announce(CommandArgs args)
         {
@@ -66,27 +99,21 @@ namespace Unturned
             SetDelay(Convert.ToInt32(seconds));
         }
 
-        private static void announceTimer_Elapsed(object sender, ElapsedEventArgs e)
+        #endregion
+
+        #region Private calls
+
+        private void announceTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             Next();
+
+            if (Messages.Count == 0) { this.Load(); }
+
         }
 
-        private static void Create()
-        {
-            System.IO.StreamWriter file = new StreamWriter(System.IO.Path.Combine(AdminTools.Path, "announces.txt"), true);
-            file.WriteLine("This line will be announced 10 minutes after injecting (or whatever you change the interval to)");
-            file.WriteLine("This line will be announced at the same time");
-            file.WriteLine(":");
-            file.WriteLine("This line will be announced 20 minutes after injecting  (2x interval)");
-            file.WriteLine(":");
-            file.WriteLine(":");
-            file.WriteLine("This line will be announced 40 minutes after injecting  (4x interval)");
-            file.WriteLine("And so forth.. then it will go back to the 1st line      (4x interval)");
-            file.Close();
-        }
         private static void Next()
         {
-            string message = AnnouncesMessages.Pop();
+            string message = Messages.Pop();
             if (message.Equals(":"))
             {
                 return;
@@ -96,21 +123,20 @@ namespace Unturned
                 NetworkChat.sendAlert(message);
             }
 
-            if (AnnouncesMessages.Count == 0)
-            {
-                Load();
-            }
         }
         private static void SetDelay(int seconds)
         {
-            if (AnnounceTimer != null) // && announceTimer.Enabled)
+            if (Timer != null) // && announceTimer.Enabled)
             {
-                AnnouncesInterval = seconds;
-                AnnounceTimer.Stop();
-                AnnounceTimer.Interval = seconds * 1000;
-                AnnounceTimer.Start();
+                Interval = seconds;
+                Timer.Stop();
+                Timer.Interval = seconds * 1000;
+                Timer.Start();
             }
         }
+
+        #endregion
+
 
     }
 }

@@ -5,23 +5,31 @@ using UnityEngine;
 
 namespace Unturned
 {
-    public static class Basics
+    internal class Basics : Module
     {
 
         #region TOP: global variables are initialized here
 
         #endregion
 
-        internal static void GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
-            CommandList.add(new Command(PermissionLevel.All.ToInt(), ClearChat, "clear", "cls"));
-            CommandList.add(new Command(PermissionLevel.All.ToInt(), OnlinePlayers, "online", "players", "who"));
-            CommandList.add(new Command(PermissionLevel.All.ToInt(), GameTime, "time"));
-            CommandList.add(new Command(PermissionLevel.All.ToInt(), RealTime, "now"));
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), Restart, "restart"));
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), About, "about"));
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.All.ToInt(), ClearChat, "clear", "cls"));
+            _return.Add(new Command(PermissionLevel.All.ToInt(), OnlinePlayers, "online", "players", "who"));
+            _return.Add(new Command(PermissionLevel.All.ToInt(), GameTime, "time"));
+            _return.Add(new Command(PermissionLevel.All.ToInt(), RealTime, "now"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Restart, "restart"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), About, "about"));
+            return _return;
         }
-        
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
+
         internal static void ClearChat(CommandArgs args)
         {
             for (int i = 0; i < 5; i++)
@@ -53,6 +61,8 @@ namespace Unturned
             String text1 = String.Format("{0} v{1}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
             Reference.Tell(args.sender.networkPlayer, text1);
         }
+
+        #endregion
 
     }
 }

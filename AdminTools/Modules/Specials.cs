@@ -1,10 +1,11 @@
 ﻿using CommandHandler;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Unturned
 {
-    public static class Specials
+    internal class Specials : Module
     {
 
         #region TOP: global variables are initialized here
@@ -13,10 +14,18 @@ namespace Unturned
 
         #endregion
 
-        internal static void GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), War, "war"));
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), War, "war"));
+            return _return;
         }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
 
         internal static void War(CommandArgs args)
         {
@@ -106,13 +115,15 @@ namespace Unturned
             }
             catch (Exception ex)
             {
-                AdminTools.Log(ex);
+                Shared.Log(ex.ToString());
 
             }
 
             NetworkChat.sendAlert("This is Sparta!.");
 
         }
+
+        #endregion
 
     }
 }

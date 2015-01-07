@@ -1,22 +1,32 @@
 ﻿using CommandHandler;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Unturned
 {
-    public static class Teleports
+    internal class Teleports : Module
     {
+
         #region TOP: global variables are initialized here
 
         #endregion
 
-        internal static void GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
-            CommandList.add(new Command(PermissionLevel.User.ToInt(), To, "tpcoord", "tc", "tpto")); // Use /tc <x> <y> <[z]>
-            CommandList.add(new Command(PermissionLevel.SuperUser.ToInt(), ToPlayer, "tplayer", "tp")); // Use /tp <playername>
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), ToMe, "tptome", "tm")); // Use /tm <playername>
-            CommandList.add(new Command(PermissionLevel.Owner.ToInt(), All, "tpall", "ta"));
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.User.ToInt(), To, "tpcoord", "tc", "tpto")); // Use /tc <x> <y> <[z]>
+            _return.Add(new Command(PermissionLevel.SuperUser.ToInt(), ToPlayer, "tplayer", "tp")); // Use /tp <playername>
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), ToMe, "tptome", "tm")); // Use /tm <playername>
+            _return.Add(new Command(PermissionLevel.Owner.ToInt(), All, "tpall", "ta"));
+            return _return;
         }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
 
         internal static void ToPlayer(CommandArgs args)
         {
@@ -85,6 +95,10 @@ namespace Unturned
             }
         }
 
+        #endregion
+
+        #region Private calls
+
         internal static void userTo(BetterNetworkUser user, Vector3 target)
         {
             user.position = target;
@@ -113,6 +127,8 @@ namespace Unturned
                 Network.SetReceivingEnabled(user.networkPlayer, 0, true);
             }, null, 2000, System.Threading.Timeout.Infinite);
         }
+
+        #endregion
 
     }
 }

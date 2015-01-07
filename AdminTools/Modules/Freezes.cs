@@ -5,19 +5,28 @@ using UnityEngine;
 
 namespace Unturned
 {
-    public static class Freezes
+    internal class Freezes : Module
     {
+
         #region TOP: global variables are initialized here
 
         internal static Dictionary<String, Vector3> frozenPlayers = new Dictionary<String, Vector3>();
 
         #endregion
 
-        internal static void GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Freeze, "freeze", "pf")); // Use /freeze <[playername,all]>
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), UnFreeze, "unfreeze", "puf")); // Use /unfreeze <[playername,all]>
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Freeze, "freeze", "pf")); // Use /freeze <[playername,all]>
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), UnFreeze, "unfreeze", "puf")); // Use /unfreeze <[playername,all]>
+            return _return;
         }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
 
         internal static void Freeze(CommandArgs args)
         {
@@ -74,6 +83,8 @@ namespace Unturned
                 Reference.Tell(args.sender.networkPlayer, String.Format("Unfroze the player {0}.", user.name));
             }
         }
-        
+
+        #endregion
+
     }
 }

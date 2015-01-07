@@ -11,115 +11,88 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
+        private static Boolean isLoaded;
+
         internal static bool Developer = false;
-        internal static bool AutoSave = false;
         internal static bool DeathMessage = false;
+
+        internal static bool Logging = false;
+
+        internal static string FileSource = System.IO.Path.Combine(AdminTools.Path, "config.ini");
+        internal static IniFile File =  new IniFile(Configs.FileSource);
 
         #endregion
 
-        internal static void GetCommands()
+        internal static void Load()
         {
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), RefreshConfigs, "refresh", "rst"));
-        }
 
-        internal static void RefreshConfigs(CommandArgs args)
+            if (Configs.isLoaded) { return; }
+
+            Directory.CreateDirectory(AdminTools.Path);
+            if (!System.IO.File.Exists(Configs.FileSource)) { Create(); }
+                      
+
+            ////things that need to be added to existing files
+            //if (Configs.File.IniReadValue("Config", "WhitelistKickMessages").Equals(""))
+            //{
+            //    Configs.File.IniWriteValue("Config", "WhitelistKickMessages", "true");
+            //}
+            //if (Configs.File.IniReadValue("Security", "Console").Equals(""))
+            //{
+            //    Configs.File.IniWriteValue("Security", "Console", "true");
+            //}
+            //if (Configs.File.IniReadValue("Security", "Password").Equals(""))
+            //{
+            //    Configs.File.IniWriteValue("Security", "Password", randomString(8));
+            //}
+            //if (Configs.File.IniReadValue("Security", "Confirmation").Equals(""))
+            //{
+            //    Configs.File.IniWriteValue("Security", "Confirmation", "false");
+            //}
+
+            Configs.Developer = Boolean.Parse(Configs.File.IniReadValue("Config", "Developer"));
+            Configs.Logging = Boolean.Parse(Configs.File.IniReadValue("Config", "Logging"));
+
+            Configs.isLoaded = true;
+
+        }
+        internal static void Create()
         {
-            ClearConfigs();
-            ReadConfigs();
-            NetworkChat.sendAlert("Config was reloaded.");
-        }
 
-        internal static void ClearConfigs()
+            Configs.File.IniWriteValue("Config", "Developer", "false");
+            Configs.File.IniWriteValue("Config", "Logging", "true");
+
+            Configs.File.IniWriteValue("Security", "Console", "true");
+            Configs.File.IniWriteValue("Security", "Password", randomString(8));
+            Configs.File.IniWriteValue("Security", "Confirmation", "false");                      
+
+        }
+        internal static void Clear()
         {
             Locations.MapLocations = null;
             Whitelists.WhitelistedSteamIDs = null;
             Homes.playerHomes = null;
             Kits.PlayerKits = null;
-            Announces.AnnouncesMessages = null;
+            Announces.Messages = null;
         }
-        internal static void CreateConfigs()
+
+        internal static void GetCommands()
         {
-            string configFile = System.IO.Path.Combine(AdminTools.Path, "config.ini");
-            IniFile ini = new IniFile(configFile);
-
-            ini.IniWriteValue("Config", "Developer", "false");
-            ini.IniWriteValue("Config", "AutoSave", "0");
-            ini.IniWriteValue("Config", "DeathMessage", "0");
-
-            ini.IniWriteValue("Config", "Whitelist", "false");
-            ini.IniWriteValue("Config", "WhitelistKickMessages", "true");
-            ini.IniWriteValue("Config", "Homes", "false");
-            ini.IniWriteValue("Config", "Kits", "false");
-            ini.IniWriteValue("Config", "Locations", "false");
-
-            ini.IniWriteValue("Timers", "RespawnItem", "false");
-            ini.IniWriteValue("Config", "RespawnVehicles", "false");
-
-            
-
-            ini.IniWriteValue("Security", "Console", "true");
-            ini.IniWriteValue("Security", "Password", randomString(8));
-            ini.IniWriteValue("Security", "Confirmation", "false");
-
-            ini.IniWriteValue("Timers", "RespawnItemInverval", "2700");
-            ini.IniWriteValue("Timers", "AnnouncesInterval", "600");
+            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), Refresh, "refresh", "rst"));
         }
-        internal static void ReadConfigs()
+
+        #region Commands
+
+        internal static void Refresh(CommandArgs args)
         {
-            Directory.CreateDirectory(AdminTools.Path);
-
-            string configFile = System.IO.Path.Combine(AdminTools.Path, "config.ini");
-            if (!File.Exists(configFile)) { CreateConfigs(); }
-
-            IniFile ini = new IniFile(configFile);
-
-            //things that need to be added to existing files
-            if (ini.IniReadValue("Config", "WhitelistKickMessages").Equals(""))
-            {
-                ini.IniWriteValue("Config", "WhitelistKickMessages", "true");
-            }
-            if (ini.IniReadValue("Security", "Console").Equals(""))
-            {
-                ini.IniWriteValue("Security", "Console", "true");
-            }
-            if (ini.IniReadValue("Security", "Password").Equals(""))
-            {
-                ini.IniWriteValue("Security", "Password", randomString(8));
-            }
-            if (ini.IniReadValue("Security", "Confirmation").Equals(""))
-            {
-                ini.IniWriteValue("Security", "Confirmation", "false");
-            }
-
-            Whitelists.UsingWhitelist = Boolean.Parse(ini.IniReadValue("Config", "Whitelist"));
-            Developer = Boolean.Parse(ini.IniReadValue("Config", "Developer"));
-            Homes.usePlayerHomes = Boolean.Parse(ini.IniReadValue("Config", "Homes"));
-            Kits.UsePlayerKits = Boolean.Parse(ini.IniReadValue("Config", "Kits"));
-            Locations.UseLocations = Boolean.Parse(ini.IniReadValue("Config", "Locations"));
-            Whitelists.ShowWhiteListKickMessages = Boolean.Parse(ini.IniReadValue("Config", "WhitelistKickMessages"));
-
-            Items.itemsResetIntervalInSeconds = Int32.Parse(ini.IniReadValue("Timers", "RespawnItemInverval"));
-            Announces.AnnouncesInterval = Int32.Parse(ini.IniReadValue("Timers", "AnnouncesInterval"));
-
-            try
-            {
-                // Loading section
-                Bans.Load();
-                Whitelists.Load();
-
-                Items.Load();
-                Announces.Load();
-
-                Homes.Load();
-                Kits.Load();
-                Locations.Load();
-            }
-            catch (Exception ex)
-            {
-                AdminTools.Log(ex);
-            }
-
+            Clear();
+            Load();
+            NetworkChat.sendAlert("Config was reloaded.");
         }
+
+        #endregion
+
+        #region Private calls
 
         private static System.Random random = new System.Random((int)DateTime.Now.Ticks);
         private static string randomString(int size)
@@ -135,6 +108,7 @@ namespace Unturned
             return builder.ToString();
         }
 
+        #endregion
 
     }
 }

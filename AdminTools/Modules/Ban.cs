@@ -1,11 +1,14 @@
 ﻿using CommandHandler;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Unturned
 {
-    public static class Bans
+    internal class Bans : Module
     {
+
         #region TOP: global variables are initialized here
 
         private static String bigAssStringWithBannedPlayerNamesAndSteamIDs = "";   //empty until player issues /unban command
@@ -13,19 +16,27 @@ namespace Unturned
 
         #endregion    
 
-        internal static void Load()
+        internal override void Load()
         {
             bigAssStringWithBannedPlayerNamesAndSteamIDs = PlayerPrefs.GetString("bans");
         }
 
-        internal static void GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Ban, "ban"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), ReasonForBan, "reason", "rban"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), UnBan, "unban", "uban"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), ReloadBans, "reloadbans", "lban"));
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), ReloadBans, "reloadbans", "lban"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Ban, "ban"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), ReasonForBan, "reason", "rban"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), UnBan, "unban", "uban"));
+            return _return;
+        }
+        internal override String GetHelp()
+        {
+            return null;
         }
 
+        #region Commands
+        
         internal static void Ban(CommandArgs args)
         {
             String playerNameToBeBanned = args.ParametersAsString;
@@ -71,7 +82,11 @@ namespace Unturned
         {
             NetworkBans.load();
         }
-        
+
+        #endregion
+
+        #region Private calls
+
         private static void saveBans()
         {
             PlayerPrefs.SetString("bans", bigAssStringWithBannedPlayerNamesAndSteamIDs);
@@ -83,7 +98,7 @@ namespace Unturned
         }
         private static bool unban(String name)
         {
-            Load();
+            AdminTools.Modules.OfType<Bans>().First().Load();
             string bannedppl = bigAssStringWithBannedPlayerNamesAndSteamIDs;
 
             if (bannedppl.Contains(name))
@@ -107,6 +122,8 @@ namespace Unturned
             NetworkBans.load();
             return true;
         }
+
+        #endregion
 
     }
 }

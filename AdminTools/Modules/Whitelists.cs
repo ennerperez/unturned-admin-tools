@@ -6,26 +6,36 @@ using UnityEngine;
 
 namespace Unturned
 {
-    public static class Whitelists
+    internal class Whitelists : Module
     {
+
         #region TOP: global variables are initialized here
 
         private static int updater3 = 0;
         internal static List<String> WhitelistedSteamIDs;
-        internal static bool UsingWhitelist = false;
+        
+        internal static bool UseWhitelist = false;
         internal static bool ShowWhiteListKickMessages = true;
+
+        private static string fileSource = System.IO.Path.Combine(AdminTools.Path, "whitelist.txt");
 
         #endregion
 
-        internal static void Load()
+        internal override void Load()
         {
-            if (UsingWhitelist)
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseWhitelist")))
             {
-                string fileSource = System.IO.Path.Combine(AdminTools.Path, "whitelist.txt");
-                if (!File.Exists(fileSource))
-                {
-                    create();
-                }
+                Configs.File.IniWriteValue("Config", "UseWhitelist", "false");
+                Configs.File.IniWriteValue("Config", "ShowWhiteListKickMessages", "true");
+            }
+
+            Whitelists.UseWhitelist = Boolean.Parse(Configs.File.IniReadValue("Config", "UseWhitelist"));
+            Whitelists.ShowWhiteListKickMessages = Boolean.Parse(Configs.File.IniReadValue("Config", "ShowWhiteListKickMessages"));
+
+            if (Whitelists.UseWhitelist)
+            {
+
+                if (!File.Exists(fileSource)) { Create();}
 
                 WhitelistedSteamIDs = new List<string>();
                 string[] whitelists = System.IO.File.ReadAllLines(fileSource);
@@ -37,27 +47,40 @@ namespace Unturned
                     }
                     catch (Exception ex)
                     {
-                        AdminTools.Log(ex);
+                        Shared.Log(ex.ToString());
                     }
                 }
             }
         }
-
-        internal static void GetCommands()
+        internal override void Create()
         {
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), Whitelist, "whitelist"));   //used for both /whitelist add & /whitelist remove
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), Enable, "enablewhitelist"));
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), Disable, "disablewhitelist"));
+            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            file.Close();
         }
+
+        internal override IEnumerable<Command> GetCommands()
+        {
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Whitelist, "whitelist"));   //used for both /whitelist add & /whitelist remove
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Enable, "enablewhitelist"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Disable, "disablewhitelist"));
+            return _return;
+        }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
 
         internal static void Enable(CommandArgs args)
         {
-            UsingWhitelist = true;
+            UseWhitelist = true;
             NetworkChat.sendAlert("Whitelist enabled.");
         }
         internal static void Disable(CommandArgs args)
         {
-            UsingWhitelist = false;
+            UseWhitelist = false;
             NetworkChat.sendAlert("Whitelist disabled.");
         }
         internal static void Whitelist(CommandArgs args)
@@ -135,15 +158,13 @@ namespace Unturned
             }
         }
 
-        private static void create()
-        {
-            System.IO.StreamWriter file = new StreamWriter(System.IO.Path.Combine(AdminTools.Path, "whitelist.txt"), true);
-            file.Close();
-        }
+        #endregion
+
+        #region Private calls
 
         internal static void KickNonWhitelistedPlayers()
         {
-            if (UsingWhitelist && updater3 <= 1)
+            if (UseWhitelist && updater3 <= 1)
             {
                 foreach (BetterNetworkUser user in UserList.users)
                 {
@@ -165,6 +186,8 @@ namespace Unturned
             }
             updater3--;
         }
+
+        #endregion
 
     }
 }

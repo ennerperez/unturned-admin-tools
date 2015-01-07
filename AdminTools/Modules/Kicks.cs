@@ -1,19 +1,28 @@
 ﻿using CommandHandler;
 using System;
+using System.Collections.Generic;
 
 namespace Unturned
 {
-    public static class Kicks
+    internal class Kicks : Module
     {
+
         #region TOP: global variables are initialized here
 
         #endregion
 
-         internal static void GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Kick, "kick", "k"));
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Kick, "kick", "k"));
+            return _return;
+        }
+        internal override String GetHelp()
+        {
+            return null;
         }
 
+        #region Commands
 
         internal static void Kick(CommandArgs args)
         {
@@ -26,5 +35,8 @@ namespace Unturned
             BetterNetworkUser user = UserList.getUserFromName(name);
             NetworkTools.kick(user.networkPlayer, reason);
         }
+
+        #endregion
+
     }
 }
