@@ -5,7 +5,7 @@ unturned-admin-tools
 
 We are Lisiados 101, a new experimental wave hardcore punk gamers with neo-Jamaican influences trapped in socialism.
 
-Yes!, we was eating multicolor barriers and some kind of mushrooms.
+Yes!, we was eating multicolor berries and some kind of mushrooms.
 
 If at any time you wish to help, please rescue us.
 
