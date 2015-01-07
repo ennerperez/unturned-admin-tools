@@ -17,12 +17,12 @@ To Nessin by:
 * DeathMessage
 * AutoSave
 
-###Lisiados 101 feature
+###Lisiados 101 features
 
 * Animals
-* Annouces
+* Announces
 * Annoying
-* Ban
+* Bans
 * Basics
 * Freezes
 * Homes
