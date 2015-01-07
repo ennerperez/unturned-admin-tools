@@ -1,22 +1,32 @@
 ﻿using CommandHandler;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Unturned
 {
-    public static class Zombies
+    internal class Zombies : Module
     {
+
         #region TOP: global variables are initialized here
 
         #endregion
 
-        internal static void GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "zombie", "z"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnzombies", "zr"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Kill, "killzombies", "zk"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Apocalypse, "apocalypse", "za"));
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "zombie", "z"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnzombies", "zr"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Kill, "killzombies", "zk"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Apocalypse, "apocalypse", "za"));
+            return _return;
         }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
 
         internal static void Spawn(CommandArgs args)
         {
@@ -86,6 +96,7 @@ namespace Unturned
 
         }
 
+        #endregion
 
     }
 }

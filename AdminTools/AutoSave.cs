@@ -13,65 +13,110 @@ namespace Unturned
 {
     public class AutoSave : MonoBehaviour
     {
-        public int saveDelayInSeconds = 600;
-        public string messageBeforeSave = "Saving world...";
-        public string messageAfterSave = "Done!";
-        private System.Timers.Timer saveTimer;
+
+        #region TOP: global variables are initialized here
+
+        private static System.Timers.Timer Timer;
+        internal static int Interval = 600;
+
+        internal static bool UseAutoSave = false;
+        
+        #endregion
+
+        internal void Load()
+        {
+
+            Configs.Load();
+
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseAutoSave"))) 
+            {
+                Configs.File.IniWriteValue("Config", "UseAutoSave", "true");
+                Configs.File.IniWriteValue("Timers", "AutoSave", "600");
+            }
+
+            AutoSave.UseAutoSave = Boolean.Parse(Configs.File.IniReadValue("Config", "UseAutoSave"));
+            AutoSave.Interval = Int32.Parse(Configs.File.IniReadValue("Timers", "AutoSave"));                       
+
+            if (AutoSave.UseAutoSave)
+            {
+                Timer = new System.Timers.Timer(AutoSave.Interval * 1000);
+                Timer.Elapsed += autoSaveTimer_Elapsed;
+                Timer.Enabled = true;
+            }
+          
+        }
+        internal static void Create()
+        {
+        }
+
         public void Start()
         {
-            Directory.CreateDirectory("Unturned_Data/Managed/mods/AutoSave");
-            if (!File.Exists("Unturned_Data/Managed/mods/AutoSave/config.ini"))
+
+            Load();
+
+            foreach (Command citem in GetCommands())
             {
-                StreamWriter streamWriter = new StreamWriter("Unturned_Data/Managed/mods/AutoSave/config.ini", true);
-                streamWriter.WriteLine("[Config]");
-                streamWriter.WriteLine("Save delay in seconds=600");
-                streamWriter.WriteLine("Announcement before saving=Saving world...");
-                streamWriter.WriteLine("Announcement after saving=Done!");
-                streamWriter.Close();
-            }
-            string[] array = File.ReadAllLines("Unturned_Data/Managed/mods/AutoSave/config.ini");
-            this.saveDelayInSeconds = Convert.ToInt32(array[1].Substring(22));
-            this.messageBeforeSave = array[2].Substring(27);
-            this.messageAfterSave = array[3].Substring(26);
-            this.saveTimer = new System.Timers.Timer((double)(this.saveDelayInSeconds * 1000));
-            this.saveTimer.Elapsed += new ElapsedEventHandler(this.SaveServer);
-            this.saveTimer.Enabled = true;
-            CommandList.add(new Command(new CommandDelegate(this.SaveCommand), new string[]
-			{
-				"save",
-				"saveserver"
-			}));
+                CommandList.add(citem);
+            }        
+                    
         }
-        private void SaveCommand(CommandArgs args)
+
+        internal IEnumerable<Command> GetCommands()
+        {
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), SaveCommand, "save", "saveserver")); 
+            return _return;
+        }
+        internal String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
+
+        internal static void SaveCommand(CommandArgs args)
         {
             ThreadPool.QueueUserWorkItem(delegate(object param0)
             {
-                this.SaveServer();
+                SaveServer();
             }, null);
         }
-        private void SaveServer()
+
+        #endregion
+
+        #region Private calls
+
+        private void autoSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            NetworkChat.sendAlert(this.messageBeforeSave);
+            ThreadPool.QueueUserWorkItem(delegate(object param0)
+            {
+                SaveServer();
+            }, null);
+        }
+
+        internal static void SaveServer()
+        {
+            NetworkChat.sendAlert("Saving world...");
             try
             {
                 NetworkTools.save();
             }
             catch
             {
-                this.Log("NetworkTools.save() failed to save correctly: ");
-                this.Log("Will try to continue saving structures and vehicles manually...");
+                Shared.Log("NetworkTools.save() failed to save correctly: ");
+                Shared.Log("Will try to continue saving structures and vehicles manually...");
                 while (true)
                 {
                     try
                     {
-                        this.saveStructuresManually();
-                        this.Log("Structures saved :D");
+                        saveStructuresManually();
+                        Shared.Log("Structures saved :D");
                         break;
                     }
                     catch (Exception ex)
                     {
-                        this.Log("An error happened while saving structures :(  ; " + ex.Message);
-                        this.Log("Retrying...");
+                        Shared.Log("An error happened while saving structures :(  ; " + ex.Message);
+                        Shared.Log("Retrying...");
                     }
                 }
                 while (true)
@@ -79,13 +124,13 @@ namespace Unturned
                     try
                     {
                         SpawnVehicles.save();
-                        this.Log("Vehicles saved :D");
+                        Shared.Log("Vehicles saved :D");
                         break;
                     }
                     catch (Exception ex)
                     {
-                        this.Log("An error happened while saving vehicles :(  ; " + ex.Message);
-                        this.Log("Retrying...");
+                        Shared.Log("An error happened while saving vehicles :(  ; " + ex.Message);
+                        Shared.Log("Retrying...");
                     }
                 }
                 while (true)
@@ -93,22 +138,22 @@ namespace Unturned
                     try
                     {
                         PlayerPrefs.Save();
-                        this.Log("PlayerPrefs saved :D");
+                        Shared.Log("PlayerPrefs saved :D");
                         break;
                     }
                     catch (Exception ex)
                     {
-                        this.Log("An error happened while saving PlayerPrefs :(  ; " + ex.Message);
-                        this.Log("Retrying...");
+                        Shared.Log("An error happened while saving PlayerPrefs :(  ; " + ex.Message);
+                        Shared.Log("Retrying...");
                     }
                 }
             }
             DateTime now = DateTime.Now;
             string text = now.ToString("yyyy-MM-dd HH:mm:ss");
-            this.Log(now + " : Saved successfully ============================================");
-            NetworkChat.sendAlert(this.messageAfterSave);
+            Shared.Log(now + " : Saved successfully ============================================");
+            NetworkChat.sendAlert("Done.");
         }
-        private void saveStructuresManually()
+        internal static void saveStructuresManually()
         {
             FieldInfo[] fields = typeof(SpawnStructures).GetFields();
             FieldInfo[] fields2 = typeof(ServerStructure).GetFields();
@@ -119,7 +164,7 @@ namespace Unturned
             }
             catch
             {
-                this.Log("Stuck at getting structure list!");
+                Shared.Log("Stuck at getting structure list!");
             }
             string text = string.Empty;
             int num = 0;
@@ -151,7 +196,7 @@ namespace Unturned
                     }
                     catch
                     {
-                        this.Log(string.Concat(new object[]
+                        Shared.Log(string.Concat(new object[]
 						{
 							"Could not get field number ",
 							num3,
@@ -161,13 +206,13 @@ namespace Unturned
 							num,
 							" structures"
 						}));
-                        this.Log("Cancelling :(");
+                        Shared.Log("Cancelling :(");
                         return;
                     }
                     num2++;
                 }
             }
-            string text2 = this.sneakString(text);
+            string text2 = sneakString(text);
             int num4 = (int)typeof(ServerSettings).GetFields()[0].GetValue(null);
             int num5 = (int)typeof(MasterSettings).GetFields()[0].GetValue(null);
             int num6 = (int)typeof(Savedata).GetFields()[6].GetValue(null);
@@ -180,10 +225,10 @@ namespace Unturned
 				"_",
 				array[num4],
 				"_",
-				this.sneakString(text),
+				sneakString(text),
 				"_"
 			}));
-            this.Log(string.Concat(new object[]
+            Shared.Log(string.Concat(new object[]
 			{
 				"Manually saved ",
 				list.Count,
@@ -192,7 +237,7 @@ namespace Unturned
 				" structures failed to save)"
 			}));
         }
-        private string sneakString(string structurestring)
+        internal static string sneakString(string structurestring)
         {
             char[] array = structurestring.ToCharArray();
             string text = string.Empty;
@@ -201,19 +246,11 @@ namespace Unturned
                 text += array[i] + '\u2000';
             }
             return text;
-        }
-        private void SaveServer(object sender, ElapsedEventArgs e)
-        {
-            ThreadPool.QueueUserWorkItem(delegate(object param0)
-            {
-                this.SaveServer();
-            }, null);
-        }
-        private void Log(string p)
-        {
-            StreamWriter streamWriter = new StreamWriter("Unturned_Data/Managed/mods/AutoSave/AutoSave_Log.txt", true);
-            streamWriter.WriteLine(p);
-            streamWriter.Close();
-        }
+        }      
+
+        #endregion
+
+        
+
     }
 }

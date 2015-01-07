@@ -1,5 +1,6 @@
 ﻿using CommandHandler;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Unturned
@@ -11,23 +12,28 @@ namespace Unturned
 
         #endregion
 
-        internal override void GetCommands()
-        {
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "animal", "a"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnanimals", "ar"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Kill, "killanimal", "ak"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Wild, "wild", "aw")); // Use /wild <#>
-        }
-
         internal override void Load()
         {
-
         }
-
+        internal override void Create()
+        {
+        }
+        
+        internal override IEnumerable<Command> GetCommands()
+        {
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "animal", "a"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnanimals", "ar"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Kill, "killanimal", "ak"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Wild, "wild", "aw")); // Use /wild <#>
+            return _return;
+        }
         internal override String GetHelp()
         {
             return null;
         }
+
+        #region Commands
 
         internal static void Kill(CommandArgs args)
         {
@@ -81,6 +87,8 @@ namespace Unturned
             NetworkChat.sendAlert(string.Format("{0} opened the zoo's gate.", args.sender.name));
 
         }
+
+        #endregion
 
     }
 

@@ -3,27 +3,35 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+
 namespace Unturned
 {
-    public static class Homes
+    internal class Homes : Module
     {
 
         #region TOP: global variables are initialized here
 
         internal static Dictionary<String, Vector3> playerHomes;
-        internal static bool usePlayerHomes = false;
+        internal static bool UsePlayerHomes = false;
+
+        private static string fileSource = System.IO.Path.Combine(AdminTools.Path, "homes.txt");
 
         #endregion
 
-        internal static void Load()
+        internal override void Load()
         {
-            if (usePlayerHomes)
+
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UsePlayerHomes")))
             {
-                string fileSource = System.IO.Path.Combine(AdminTools.Path, "homes.txt");
-                if (!File.Exists(fileSource))
-                {
-                    createHomes();
-                }
+                Configs.File.IniWriteValue("Config", "UsePlayerHomes", "false");
+            }
+
+            Homes.UsePlayerHomes = Boolean.Parse(Configs.File.IniReadValue("Config", "UsePlayerHomes"));
+
+            if (Homes.UsePlayerHomes)
+            {
+
+                if (!File.Exists(fileSource)) { Create(); }
 
                 playerHomes = new Dictionary<String, Vector3>();
                 string[] homes = System.IO.File.ReadAllLines(fileSource);
@@ -42,22 +50,36 @@ namespace Unturned
                     }
                     catch (Exception ex)
                     {
-                        AdminTools.Log(ex);
+                        Shared.Log(ex.ToString());
                     }
                 }
+
             }
 
         }
-
-        internal static void GetCommands()
+        internal override void Create()
         {
-            CommandList.add(new Command(PermissionLevel.Level1.ToInt(), SetHome, "sethome", "sh"));
-            CommandList.add(new Command(PermissionLevel.Level1.ToInt(), Home, "home", "h"));
+            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            file.Close();
         }
-                
+
+        internal override IEnumerable<Command> GetCommands()
+        {
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Level1.ToInt(), SetHome, "sethome", "sh"));
+            _return.Add(new Command(PermissionLevel.Level1.ToInt(), Home, "home", "h"));
+            return _return;
+        }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
+
         internal static void SetHome(CommandArgs args)
         {
-            if (usePlayerHomes)
+            if (UsePlayerHomes)
             {
                 Vector3 location = NetworkUserList.getModelFromPlayer(args.sender.networkPlayer).transform.position;
                 setHome(args.sender.steamid, location);
@@ -66,18 +88,17 @@ namespace Unturned
         }
         internal static void Home(CommandArgs args)
         {
-            if (usePlayerHomes)
+            if (UsePlayerHomes)
             {
                 home(args.sender);
                 Reference.Tell(args.sender.networkPlayer, "Teleported home. Don't move for 5 seconds if you don't wanna get kicked");
             }
         }
 
-        private static void createHomes()
-        {
-            System.IO.StreamWriter file = new StreamWriter(System.IO.Path.Combine(AdminTools.Path, "homes.txt"), true);
-            file.Close();
-        }
+        #endregion
+
+        #region Private calls
+
         private static void setHome(string steamID, Vector3 location)
         {
             string fileSource = System.IO.Path.Combine(AdminTools.Path, "homes.txt");
@@ -107,6 +128,8 @@ namespace Unturned
         {
             Teleports.userTo(user, playerHomes[user.steamid]);
         }
+
+        #endregion
 
     }
 }

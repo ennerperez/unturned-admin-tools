@@ -1,29 +1,37 @@
 ﻿using CommandHandler;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 namespace Unturned
 {
-    public static class Locations
+    internal class Locations : Module
     {
+
         #region TOP: global variables are initialized here
 
         internal static List<Location> MapLocations;
         internal static bool UseLocations = false;
 
+        private static string fileSource = System.IO.Path.Combine(AdminTools.Path, "locations.txt");
+
         #endregion
 
-        internal static void Load()
+        internal override void Load()
         {
-            if (UseLocations)
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseLocations")))
             {
-                string fileSource = System.IO.Path.Combine(AdminTools.Path, "locations.txt");
-                if (!File.Exists(fileSource))
-                {
-                    create();
-                }
+                Configs.File.IniWriteValue("Config", "UseLocations", "false");
+            }
+
+            Locations.UseLocations = Boolean.Parse(Configs.File.IniReadValue("Config", "UseLocations"));
+
+            if (Locations.UseLocations)
+            {
+
+                if (!File.Exists(fileSource)) { Create();}
 
                 MapLocations = new List<Location>();
                 string[] locations = System.IO.File.ReadAllLines(fileSource);
@@ -38,22 +46,73 @@ namespace Unturned
                         }
                         catch (Exception ex)
                         {
-                            AdminTools.Log(ex);
+                            Shared.Log(ex.ToString());
                         }
                     }
                 }
             }
         }
-
-        internal static void GetCommands()
+        internal override void Create()
         {
-            CommandList.add(new Command(PermissionLevel.All.ToInt(), GetPublic, "here", "h"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), GetPrivate, "where", "w"));
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), GetExternal, "at", "@")); // Use /@ <playername>
-            // ---> Dev's commands
-            CommandList.add(new Command(PermissionLevel.All.ToInt(), Get, "position", "p"));
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), Set, "saveloc", "sloc")); // Use for remove a location /sloc -1
+            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            file.WriteLine("Cementery,62.90188,720.3353,6");
+            file.WriteLine("Lighthouse,741.6324,-820.9641,20");
+            file.WriteLine("Radio Anthena,-256.7602,-650.5743,20");
+            file.WriteLine("Confederation Bridge,-690.8866,332.1692,60");
+            file.WriteLine("Tignish Campground,154.197,692.9236,60");
+            file.WriteLine("Kensington Campground,315.047,-507.9257,60");
+            file.WriteLine("Summerside Peninsula,788.0297,-446.1592,60");
+            file.WriteLine("Taylor Beach,58.82936,2.11446,60");
+            file.WriteLine("O'Leary Military Base,-440.9788,594.9431,100");
+            file.WriteLine("Burywood,-10.23493,651.5575,100");
+            file.WriteLine("Belfast Airport,564.8459,410.3109,100");
+            file.WriteLine("St. Peter's Island,-257.092,30.71979,100");
+            file.WriteLine("Montague,236.5407,-101.0876,100");
+            file.WriteLine("Holman Island,-754.6213,-758.9188,100");
+            file.WriteLine("Holman Island,-766.0956,-578.6145,100");
+            file.WriteLine("Holman Island,-718.1101,-471.4777,100");
+            file.WriteLine("Oultons Isle,204.6362,-824.428,100");
+            file.WriteLine("Fernwood Farm,-246.5482,-377.4702,80");
+            file.WriteLine("Wiltshire Farm,-425.9268,-563.4899,80");
+            file.WriteLine("Courtin Island,829.5908,330.0507,110");
+            file.WriteLine("Golf Camp,759.8466,-619.4179,120");
+            file.WriteLine("Charlottetown,24.07166,-419.7918,150");
+            file.WriteLine("Alberton,-582.9,85.81968,180");
+            file.Close();
         }
+        internal override void Save()
+        {
+            File.Delete(fileSource);
+
+            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            foreach (Location item in MapLocations)
+            {
+                string locName = item.Name;
+                Vector2 pos = item.Point;
+                float rad = item.Radius;
+                file.WriteLine(String.Format("{0},{1},{2},{3}", locName, pos.x, pos.y, rad));
+            }
+
+            file.Close();
+        }
+
+        internal override IEnumerable<Command> GetCommands()
+        {
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.All.ToInt(), GetPublic, "here", "h"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), GetPrivate, "where", "w"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), GetExternal, "at", "@")); // Use /@ <playername>
+            // ---> Dev's commands
+            _return.Add(new Command(PermissionLevel.All.ToInt(), Get, "position", "p"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Set, "saveloc", "sloc")); // Use for remove a location /sloc -1
+            return _return;
+        }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+        
+        #region Commands
 
         internal static void Get(CommandArgs args)
         {
@@ -92,7 +151,7 @@ namespace Unturned
                 if (Configs.Developer) { Get(args); }
             }
 
-            save();
+            AdminTools.Modules.OfType<Locations>().First().Save();
             Reference.Tell(args.sender.networkPlayer, "Locations saved.");
 
         }
@@ -109,6 +168,10 @@ namespace Unturned
         {
             get(args, 2);
         }
+
+        #endregion
+
+        #region Private calls
 
         internal static void get(CommandArgs args, int mode = 0)
         {
@@ -162,52 +225,11 @@ namespace Unturned
             }
         }
 
-        private static void create()
-        {
-            System.IO.StreamWriter file = new StreamWriter(System.IO.Path.Combine(AdminTools.Path, "locations.txt"), true);
-            file.WriteLine("Cementery,62.90188,720.3353,6");
-            file.WriteLine("Lighthouse,741.6324,-820.9641,20");
-            file.WriteLine("Radio Anthena,-256.7602,-650.5743,20");
-            file.WriteLine("Confederation Bridge,-690.8866,332.1692,60");
-            file.WriteLine("Tignish Campground,154.197,692.9236,60");
-            file.WriteLine("Kensington Campground,315.047,-507.9257,60");
-            file.WriteLine("Summerside Peninsula,788.0297,-446.1592,60");
-            file.WriteLine("Taylor Beach,58.82936,2.11446,60");
-            file.WriteLine("O'Leary Military Base,-440.9788,594.9431,100");
-            file.WriteLine("Burywood,-10.23493,651.5575,100");
-            file.WriteLine("Belfast Airport,564.8459,410.3109,100");
-            file.WriteLine("St. Peter's Island,-257.092,30.71979,100");
-            file.WriteLine("Montague,236.5407,-101.0876,100");
-            file.WriteLine("Holman Island,-754.6213,-758.9188,100");
-            file.WriteLine("Holman Island,-766.0956,-578.6145,100");
-            file.WriteLine("Holman Island,-718.1101,-471.4777,100");
-            file.WriteLine("Oultons Isle,204.6362,-824.428,100");
-            file.WriteLine("Fernwood Farm,-246.5482,-377.4702,80");
-            file.WriteLine("Wiltshire Farm,-425.9268,-563.4899,80");
-            file.WriteLine("Courtin Island,829.5908,330.0507,110");
-            file.WriteLine("Golf Camp,759.8466,-619.4179,120");
-            file.WriteLine("Charlottetown,24.07166,-419.7918,150");
-            file.WriteLine("Alberton,-582.9,85.81968,180");
-            file.Close();
-        }
-        private static void save()
-        {
-            string fileSource = System.IO.Path.Combine(AdminTools.Path, "locations.txt");
-            File.Delete(fileSource);
-
-            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
-            foreach (Location item in MapLocations)
-            {
-                string locName = item.Name;
-                Vector2 pos = item.Point;
-                float rad = item.Radius;
-                file.WriteLine(String.Format("{0},{1},{2},{3}", locName, pos.x, pos.y, rad));
-            }
-
-            file.Close();
-        }
+        #endregion
 
     }
+
+    #region Structures
 
     public class Rectangle
     {
@@ -263,5 +285,7 @@ namespace Unturned
         }
 
     }
+
+    #endregion
 
 }

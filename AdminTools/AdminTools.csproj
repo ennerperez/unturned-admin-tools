@@ -64,7 +64,7 @@
     <Compile Include="Modules\Zombies.cs" />
     <Compile Include="PermissionLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReflectiveEnumerator.cs" />
+    <Compile Include="Shared.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">

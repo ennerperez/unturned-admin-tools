@@ -1,12 +1,13 @@
 ﻿using CommandHandler;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 namespace Unturned
 {
-    public static class Kits
+    internal class Kits : Module
     {
 
         #region TOP: global variables are initialized here
@@ -14,17 +15,24 @@ namespace Unturned
         internal static Dictionary<String, Dictionary<string, int[]>> PlayerKits;
         internal static bool UsePlayerKits = false;
 
+        private static string fileSource = System.IO.Path.Combine(AdminTools.Path, "kits.txt");
+
         #endregion
-        
-        internal static void Load()
+
+        internal override void Load()
         {
-            if (UsePlayerKits)
+
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UsePlayerKits")))
             {
-                string fileSource = System.IO.Path.Combine(AdminTools.Path, "kits.txt");
-                if (!File.Exists(fileSource))
-                {
-                    create();
-                }
+                Configs.File.IniWriteValue("Config", "UsePlayerKits", "false");
+            }
+
+            Kits.UsePlayerKits = Boolean.Parse(Configs.File.IniReadValue("Config", "UsePlayerKits"));
+
+            if (Kits.UsePlayerKits)
+            {
+
+                if (!File.Exists(fileSource)) { Create(); }
 
                 PlayerKits = new Dictionary<String, Dictionary<string, int[]>>();
                 string[] kits = System.IO.File.ReadAllLines(fileSource);
@@ -50,20 +58,59 @@ namespace Unturned
                     }
                     catch (Exception ex)
                     {
-                        AdminTools.Log(ex);
+                        Shared.Log(ex.ToString());
                     }
                 }
             }
         }
-        
-        internal static void GetCommands()
+        internal override void Create()
         {
-            CommandList.add(new Command(PermissionLevel.Owner.ToInt(), List, "getkits", "ks", "kits"));
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), Get, "kit", "k")); // Use /k <kitname>
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), AddTo, "addkit", "ka")); // Use /ka <kitname> <[itemid]>
-            CommandList.add(new Command(PermissionLevel.Owner.ToInt(), Set, "setkit", "ks")); // Use /ks <kitname> <[itemid1]> <[itemid2]> <[itemid3]>
+            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            file.Close();
+        }
+        internal override void Save()
+        {
+            string[] lines = System.IO.File.ReadAllLines(fileSource);
+            File.Delete(fileSource);
+
+            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            foreach (KeyValuePair<String, Dictionary<string, int[]>> item in PlayerKits)
+            {
+                string steamID = item.Key;
+                foreach (KeyValuePair<string, int[]> kit in item.Value)
+                {
+                    string kitname = kit.Key;
+                    List<string> itemsID = new List<string>();
+                    foreach (int kititem in kit.Value)
+                    {
+                        itemsID.Add(kititem.ToString());
+                    }
+
+                    file.WriteLine(String.Format("{0}:{1}:{2}", steamID, kitname, string.Join(",", itemsID.ToArray())));
+                }
+
+            }
+
+            file.Close();
+
+        }
+
+        internal override IEnumerable<Command> GetCommands()
+        {
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Owner.ToInt(), List, "getkits", "ks", "kits"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Get, "kit", "k")); // Use /k <kitname>
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), AddTo, "addkit", "ka")); // Use /ka <kitname> <[itemid]>
+            _return.Add(new Command(PermissionLevel.Owner.ToInt(), Set, "setkit", "ks")); // Use /ks <kitname> <[itemid1]> <[itemid2]> <[itemid3]>
+            return _return;
+        }
+        internal override String GetHelp()
+        {
+            return null;
         }
         
+        #region Commands
+
         internal static void List(CommandArgs args)
         {
             if (UsePlayerKits)
@@ -187,38 +234,9 @@ namespace Unturned
 
         }
 
-        private static void create()
-        {
-            System.IO.StreamWriter file = new StreamWriter(System.IO.Path.Combine(AdminTools.Path, "kits.txt"), true);
-            file.Close();
-        }
-        private static void save()
-        {
-            string fileSource = System.IO.Path.Combine(AdminTools.Path, "kits.txt");
-            string[] lines = System.IO.File.ReadAllLines(fileSource);
-            File.Delete(fileSource);
+        #endregion
 
-            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
-            foreach (KeyValuePair<String, Dictionary<string, int[]>> item in PlayerKits)
-            {
-                string steamID = item.Key;
-                foreach (KeyValuePair<string, int[]> kit in item.Value)
-                {
-                    string kitname = kit.Key;
-                    List<string> itemsID = new List<string>();
-                    foreach (int kititem in kit.Value)
-                    {
-                        itemsID.Add(kititem.ToString());
-                    }
-
-                    file.WriteLine(String.Format("{0}:{1}:{2}", steamID, kitname, string.Join(",", itemsID.ToArray())));
-                }
-
-            }
-
-            file.Close();
-
-        }
+        #region Private calls
 
         private static void addTo(string steamID, string kitname, int itemID)
         {
@@ -239,7 +257,7 @@ namespace Unturned
             itemids.Add(itemID);
             PlayerKits[steamID][kitname] = itemids.ToArray();
 
-            save();
+            AdminTools.Modules.OfType<Kits>().First().Save();           
 
         }
         private static void set(string steamID, string kitname, int[] itemsID)
@@ -257,9 +275,11 @@ namespace Unturned
                 PlayerKits[steamID].Remove(kitname);
             }
 
-            save();
+            AdminTools.Modules.OfType<Kits>().First().Save();           
 
         }
+
+        #endregion
 
     }
 }

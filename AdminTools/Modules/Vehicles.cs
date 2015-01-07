@@ -1,30 +1,64 @@
 ﻿using CommandHandler;
 using System;
+using System.Collections.Generic;
 using System.Timers;
 using UnityEngine;
 
 namespace Unturned
 {
-    public static class Vehicles
+    internal class Vehicles : Module
     {
 
         #region TOP: global variables are initialized here
 
-        private static Timer VehiclesTimer;
-        internal static int VehiclesInterval = 600;
-        internal static bool RespawnVehicles = false;
+        private static Timer Timer;
+        internal static int Interval = 600;
+        internal static bool UseRespawnVehicles = false;
 
         #endregion       
 
-        internal static void GetCommands()
+        internal override void Load()
         {
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "car", "v"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnvehicles", "vs"));
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Repair, "repairvehicles", "vr", "repair"));
-            CommandList.add(new Command(PermissionLevel.SuperUser.ToInt(), Refuel, "refuelvehicles", "vf", "refuel"));
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), Destroy, "destroyvehicles", "vd"));
-            CommandList.add(new Command(PermissionLevel.Level1.ToInt(), Sirens, "sirens")); // Use /sirens <[on,off]>
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseRespawnVehicles")))
+            {
+                Configs.File.IniWriteValue("Config", "UseRespawnVehicles", "false");
+                Configs.File.IniWriteValue("Timers", "RespawnVehicles", "1350");
+            }
+
+            Vehicles.UseRespawnVehicles = Boolean.Parse(Configs.File.IniReadValue("Config", "UseRespawnVehicles"));
+            Vehicles.Interval = Int32.Parse(Configs.File.IniReadValue("Timers", "RespawnVehicles"));
+
+            if (Vehicles.UseRespawnVehicles)
+            {
+
+                if (Timer == null)
+                {
+                    Timer = new Timer(Interval * 1000);
+                    Timer.Elapsed += vehiclesTimer_Elapsed;
+                    Timer.Enabled = true;
+                }
+
+            }
+            
         }
+
+        internal override IEnumerable<Command> GetCommands()
+        {
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "car", "v"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnvehicles", "vs"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Repair, "repairvehicles", "vr", "repair"));
+            _return.Add(new Command(PermissionLevel.SuperUser.ToInt(), Refuel, "refuelvehicles", "vf", "refuel"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Destroy, "destroyvehicles", "vd"));
+            _return.Add(new Command(PermissionLevel.Level1.ToInt(), Sirens, "sirens")); // Use /sirens <[on,off]>
+            return _return;
+        }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
 
         internal static void Destroy(CommandArgs args)
         {
@@ -56,30 +90,9 @@ namespace Unturned
         
         internal static void Respawn(CommandArgs args)
         {
-            GameObject model = (GameObject)typeof(SpawnVehicles).GetFields()[0].GetValue(null);
-
-            try   //Destroy all cars
-            {
-                destroy();
-                
-                int amount = model.transform.FindChild("models").childCount;
-                for (int i = 0; i < amount; i++)
-                {
-                    Transform child = model.transform.FindChild("models").GetChild(i);
-                    Network.RemoveRPCs(child.networkView.viewID);
-                    Network.Destroy(child.networkView.viewID);
-                }
-            }
-            catch { }
-
-            SpawnVehicles.save();
-            Reference.Tell(args.sender.networkPlayer, String.Format("Re-spawning {0} vehicles in 3 seconds...", Loot.getCars()));
             
-            System.Threading.Timer timer;
-            timer = new System.Threading.Timer(obj =>
-            {
-                RespawnVehicles = true;
-            }, null, 3000, System.Threading.Timeout.Infinite);
+            Reference.Tell(args.sender.networkPlayer, String.Format("Re-spawning {0} vehicles in 3 seconds...", Loot.getCars()));
+            respawn();
 
         }
         internal static void Spawn(CommandArgs args)
@@ -140,9 +153,42 @@ namespace Unturned
                 vehicle.networkView.RPC("tellSirens", RPCMode.All, new object[] { val });
             }
         }
-        
-        // Basic actions
 
+        #endregion
+
+        #region Private calls
+
+        private void vehiclesTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            respawn();
+        }
+
+        private static void respawn()
+        {
+            GameObject model = (GameObject)typeof(SpawnVehicles).GetFields()[0].GetValue(null);
+
+            try   //Destroy all cars
+            {
+                destroy();
+
+                int amount = model.transform.FindChild("models").childCount;
+                for (int i = 0; i < amount; i++)
+                {
+                    Transform child = model.transform.FindChild("models").GetChild(i);
+                    Network.RemoveRPCs(child.networkView.viewID);
+                    Network.Destroy(child.networkView.viewID);
+                }
+            }
+            catch { }
+
+            SpawnVehicles.save();
+            
+            System.Threading.Timer timer;
+            timer = new System.Threading.Timer(obj =>
+            {
+                UseRespawnVehicles = true;
+            }, null, 3000, System.Threading.Timeout.Infinite);
+        }
         private static void destroy()
         {
             Vehicle[] vehicles = UnityEngine.Object.FindObjectsOfType(typeof(Vehicle)) as Vehicle[];
@@ -153,6 +199,8 @@ namespace Unturned
                 vehicle.damage(1000);
             }
         }
+
+        #endregion
 
     }
 }

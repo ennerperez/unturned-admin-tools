@@ -5,24 +5,33 @@ using UnityEngine;
 
 namespace Unturned
 {
-    public static class Annoying
+    internal class Annoying : Module
     {
 
         #region TOP: global variables are initialized here
 
         internal static Dictionary<String, Vector3> VanishedPlayers = new Dictionary<String, Vector3>();
+        internal static Dictionary<String, int> PunishedPlayers = new Dictionary<String, int>();
 
         #endregion
 
-        internal static void GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), Lag, "lag", "lg"));
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), UnLag, "unlag", "ulg"));
-            CommandList.add(new Command(PermissionLevel.Owner.ToInt(), Horn, "horn", "h"));
-            CommandList.add(new Command(PermissionLevel.Owner.ToInt(), Vanish, "vanish", "vis"));
-            CommandList.add(new Command(PermissionLevel.Owner.ToInt(), God, "god"));
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Lag, "lag", "lg"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), UnLag, "unlag", "ulg"));
+            _return.Add(new Command(PermissionLevel.Owner.ToInt(), Horn, "horn", "h"));
+            _return.Add(new Command(PermissionLevel.Owner.ToInt(), Vanish, "vanish", "vis"));
+            _return.Add(new Command(PermissionLevel.Owner.ToInt(), God, "god"));
+            return _return;
+        }
+        internal override String GetHelp()
+        {
+            return null;
         }
 
+        #region Commands
+        
         internal static void God(CommandArgs args)
         {
             Life life = args.sender.player.gameObject.GetComponent<Life>();
@@ -98,6 +107,8 @@ namespace Unturned
                 NetworkChat.sendAlert(String.Format("{0} is visible again.", args.sender.name));
             }
         }
+
+        #endregion
 
     }
 }

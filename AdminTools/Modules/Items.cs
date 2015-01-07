@@ -1,35 +1,60 @@
 ﻿using CommandHandler;
 using System;
+using System.Collections.Generic;
 using System.Timers;
 using UnityEngine;
 
 namespace Unturned
 {
-    public static class Items
+    internal class Items : Module
     {
+
         #region TOP: global variables are initialized here
 
-        internal static Timer itemsTimer;
-        internal static int itemsResetIntervalInSeconds = 2700;
+        internal static Timer Timer;
+        internal static int Interval = 2700;
+
+        internal static bool UseRespawnItems = false;
 
         #endregion
 
-        internal static void Load()
+        internal override void Load()
         {
-            if (itemsTimer != null)//&& itemsTimer.Enabled)
+
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseRespawnItems")))
             {
-                itemsTimer = new Timer(itemsResetIntervalInSeconds * 1000);
-                itemsTimer.Elapsed += itemsTimer_Elapsed;
-                itemsTimer.Enabled = true;
+                Configs.File.IniWriteValue("Config", "UseRespawnItems", "true");
+                Configs.File.IniWriteValue("Timers", "RespawnItems", "2700");
+            }
+
+            Items.UseRespawnItems = Boolean.Parse(Configs.File.IniReadValue("Config", "UseRespawnItems"));
+            Items.Interval = Int32.Parse(Configs.File.IniReadValue("Timers", "RespawnItems"));
+
+            if (Items.UseRespawnItems)
+            {
+                if (Timer != null)
+                {
+                    Timer = new Timer(Interval * 1000);
+                    Timer.Elapsed += itemsTimer_Elapsed;
+                    Timer.Enabled = true;
+                }
             }
         }
 
-        internal static void GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "spawn", "i", "get")); // Use /i <itemid>
-            CommandList.add(new Command(PermissionLevel.Moderator.ToInt(), Reset, "resetitems", "ir"));
-            CommandList.add(new Command(PermissionLevel.Admin.ToInt(), SetDelay, "setitemsdelay"));
+            List<Command> _return = new List<Command>();
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "spawn", "i", "get")); // Use /i <itemid>
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Reset, "resetitems", "ir"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), SetDelay, "setitemsdelay"));
+            return _return;
         }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
 
         internal static void Reset(CommandArgs args)
         {
@@ -54,24 +79,30 @@ namespace Unturned
 
         }
 
+        #endregion
+
+        #region Private calls
+
         private static void itemsTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             resetItems();
         }
         private static void setItemsDelay(int seconds)
         {
-            if (itemsTimer != null && itemsTimer.Enabled)
+            if (Timer != null && Timer.Enabled)
             {
-                itemsResetIntervalInSeconds = seconds;
-                itemsTimer.Stop();
-                itemsTimer.Interval = seconds * 1000;
-                itemsTimer.Start();
+                Interval = seconds;
+                Timer.Stop();
+                Timer.Interval = seconds * 1000;
+                Timer.Start();
             }
         }
         private static void resetItems()
         {
             SpawnItems.reset();
         }
+
+        #endregion
 
     }
 }

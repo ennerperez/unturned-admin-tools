@@ -9,118 +9,62 @@ using UnityEngine;
 
 namespace Unturned
 {
-    public partial class AdminTools : MonoBehaviour
+    public class AdminTools : MonoBehaviour
     {
+
         #region TOP: global variables are initialized here
 
-        public const string Path = "Unturned_Data/Managed/mods/Admin";
+        internal const string Path = "Unturned_Data/Managed/mods/Admin";
+        internal static List<Module> Modules = new List<Module>();
         //public string lastUsedCommand = "none";
 
         #endregion
-        
+
         public void Start()
         {
 
-            // Commands are being added here.
-            // the 0's you see mean that these commands are usable by ALL players
-
-            // A higher number means you need a higher permission rank to do said command
-            // Individual player permission levels can be found in /mods/UserPermissionLevels.ini
-
-            Configs.ReadConfigs();
-
-            List<Module> modules = new List<Module>();
-            foreach (Type type in Assembly.GetAssembly(typeof(Module)).GetTypes())
+            Configs.Load();
+            try
             {
-                if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(Module)))
+
+                foreach (Type type in Assembly.GetAssembly(typeof(Module)).GetTypes())
                 {
-                    modules.Add((Module)Activator.CreateInstance(type, null));
-                }              
-            }
-            modules.Sort();
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(Module)))
+                    {
+                        Modules.Add((Module)Activator.CreateInstance(type, null));
+                    }
+                }
+                //Modules.Sort();
 
-            foreach (Module item in modules)
+                foreach (Module item in Modules)
+                {
+                    foreach (Command citem in item.GetCommands())
+                    {
+                        CommandList.add(citem);
+                    }
+                    item.Load();
+                }
+
+            }
+            catch (Exception ex)
             {
-                item.GetCommands();
-                item.Load();
+                Shared.Log(ex.ToString());
             }
-            
-            ////List<Module> modules;
-            ////modules = System.Reflection.ReflectiveEnumerator.GetEnumerableOfType<Module>();
-            
-            ////foreach (Module item in .GetEnumerator())
-            ////{
 
-            ////}
+            Shared.Log("Server started.");
 
-            ////foreach (Module item in modules)
-            ////{
-            ////    item.a
-            ////}
-
-            //// Basic commands
-            //Basics.GetCommands();
-
-            //// Location commands
-            //Locations.GetCommands();
-
-            //// Home commands
-            //Homes.GetCommands();
-
-            //// Teleport commands
-            //Teleports.GetCommands();
-
-            //// Ban, Kick, Whitelist commands
-            //Bans.GetCommands();
-            //Kicks.GetCommands();
-            //Whitelists.GetCommands();
-
-            //// General moderation commands
-            //Announces.GetCommands();
-
-            //// Items & Kits commands
-            //Items.GetCommands();
-            //Kits.GetCommands();
-
-            //// Vehicles commands
-            //Vehicles.GetCommands();
-
-            //// Zombies commands
-            //Zombies.GetCommands();
-
-            //// Animals commands
-            //Animals.GetCommands();
-
-            //// Players commands
-            //Players.GetCommands();
-            //Freezes.GetCommands();
-            //Annoying.GetCommands();
-
-            //// System commands
-            //Configs.GetCommands();
-
-            //// Gameplay commands
-            //Specials.GetCommands();
-
-            //Configs.ReadConfigs();
-
-        }
-
-        internal static void Log(Exception p)
-        {
-            string logFile = System.IO.Path.Combine(Path, "errors.log");
-            System.IO.StreamWriter file = new StreamWriter(logFile, true);
-            file.WriteLine(p.ToString());
-            file.Close();
         }
 
         public void Update()
         {
-            Whitelists.KickNonWhitelistedPlayers();
-
-            if (Vehicles.RespawnVehicles)
+            if (Whitelists.UseWhitelist)
             {
-                Vehicles.RespawnVehicles = false;
+                Whitelists.KickNonWhitelistedPlayers();
+            }
+
+            if (Vehicles.UseRespawnVehicles)
+            {
+                Vehicles.UseRespawnVehicles = false;
                 SpawnVehicles spawnveh = UnityEngine.Object.FindObjectOfType<SpawnVehicles>();
                 spawnveh.onReady();
             }
@@ -162,32 +106,33 @@ namespace Unturned
 
         public void OnGUI()
         {
-            
-                List<string> console = new List<string>();
-                console.Add(" ");
-                console.Add("Welcome back to Unturned Server!");
-                //console.Add(Unturned.Strings.Welcome);
-                                
-                console.Add(" ");
 
-                foreach (BetterNetworkUser item in UserList.users)
+            List<string> console = new List<string>();
+            console.Add(" ");
+            console.Add("Welcome back to Unturned Server!");
+            //console.Add(Unturned.Strings.Welcome);
+
+            console.Add(" ");
+
+            foreach (BetterNetworkUser item in UserList.users)
+            {
+                if (!string.IsNullOrEmpty(item.networkPlayer.ipAddress))
                 {
-                    if (!string.IsNullOrEmpty(item.networkPlayer.ipAddress))
-                    {
-                        console.Add(string.Format("{0}    {1}     {2}     {3}",
-                        item.steamid, item.reputation, item.networkPlayer.ipAddress, item.name));
-                    }
+                    console.Add(string.Format("{0}    {1}     {2}     {3}",
+                    item.steamid, item.reputation, item.networkPlayer.ipAddress, item.name));
                 }
+            }
 
-                GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
+            GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
 
-                foreach (string item in console)
-                {
-                    GUILayout.Label(item);
-                }
-                GUILayout.EndArea();
-            
+            foreach (string item in console)
+            {
+                GUILayout.Label(item);
+            }
+            GUILayout.EndArea();
+
         }
+                
 
     }
 
