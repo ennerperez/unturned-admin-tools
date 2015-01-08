@@ -13,7 +13,20 @@ namespace Unturned
         internal static Dictionary<String, Vector3> VanishedPlayers = new Dictionary<String, Vector3>();
         internal static Dictionary<String, int> PunishedPlayers = new Dictionary<String, int>();
 
+        internal static bool IsPublic = true;
+
         #endregion
+
+        internal override void Load()
+        {
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "PublicAnnoying")))
+            {
+                Configs.File.IniWriteValue("Config", "PublicAnnoying", (Annoying.IsPublic) ? "true" : "false");
+            }
+
+            Annoying.IsPublic = Boolean.Parse(Configs.File.IniReadValue("Config", "PublicAnnoying"));
+
+        }
 
         internal override void Refresh()
         {
@@ -79,13 +92,13 @@ namespace Unturned
             {
                 life.networkView.RPC("tellAllLife", RPCMode.All, new object[] { 100, 100, 100, 100, false, false });
                 life.damage(1, "poke");
-                NetworkChat.sendAlert(String.Format("{0} is mortal again.", args.sender.name));
+                NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "AnnoyingGodOff"), args.sender.name));
             }
             else
             {
                 life.networkView.RPC("tellAllLife", RPCMode.All, new object[] { 10000, 100, 100, 100, false, false });
                 life.damage(1, "poke");
-                NetworkChat.sendAlert(String.Format("{0} is a God.", args.sender.name));
+                NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "AnnoyingGodOn"), args.sender.name));
             }
 
         }
@@ -96,7 +109,7 @@ namespace Unturned
             BetterNetworkUser user = UserList.getUserFromName(naam);
 
             Network.SetReceivingEnabled(user.networkPlayer, 0, false);
-            Reference.Tell(args.sender.networkPlayer, String.Format("You are now lagging the shit out of {0}.", user.name));
+            Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "AnnoyingLag"), user.name));
         }
         internal static void UnLag(CommandArgs args)
         {
@@ -104,7 +117,7 @@ namespace Unturned
             BetterNetworkUser user = UserList.getUserFromName(naam);
 
             Network.SetReceivingEnabled(user.networkPlayer, 0, true);
-            Reference.Tell(args.sender.networkPlayer, String.Format("You are no longer lagging the shit out of {0}.", user.name));
+            Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "AnnoyingUnLag"), user.name));
         }
         internal static void Horn(CommandArgs args)
         {
@@ -123,14 +136,28 @@ namespace Unturned
             try
             {
                 VanishedPlayers.Add(args.sender.steamid, new Vector3(0, 0, 0));
-                //Reference.Tell(args.sender.networkPlayer, "You have vanished :D");
-                NetworkChat.sendAlert(String.Format("{0} is vanished.", args.sender.name));
+                if (Annoying.IsPublic)
+                {
+                    NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "AnnoyingVanishOn"), args.sender.name));
+                }
+                else
+                {
+                    Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "AnnoyingVanishOn"), args.sender.name));
+                }               
+                
             }
             catch
             {
                 VanishedPlayers.Remove(args.sender.steamid);
-                //Reference.Tell(args.sender.networkPlayer, "You are visible again.");
-                NetworkChat.sendAlert(String.Format("{0} is visible again.", args.sender.name));
+                if (Annoying.IsPublic)
+                {
+                    NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "AnnoyingVanishOff"), args.sender.name));
+                }
+                else
+                {
+                    Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "AnnoyingVanishOff"), args.sender.name));
+                }
+                
             }
         }
 

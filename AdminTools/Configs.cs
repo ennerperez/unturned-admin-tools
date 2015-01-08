@@ -28,6 +28,8 @@ namespace Unturned
 
             if (Configs.IsLoaded) { return; }
 
+            Strings.Load();
+
             Directory.CreateDirectory(AdminTools.AdminPath);
             if (!System.IO.File.Exists(Configs.Source)) { Save(); }
 
@@ -61,6 +63,7 @@ namespace Unturned
 
             Configs.File.IniWriteValue("Config", "Developer", (Configs.Developer) ? "true" : "false");
             Configs.File.IniWriteValue("Config", "Logging", (Configs.Logging) ? "true" : "false");
+            
 
             Configs.File.IniWriteValue("Security", "Console", (Configs.Console) ? "true" : "false");
             Configs.File.IniWriteValue("Security", "Password", Shared.RandomString(8));
@@ -86,7 +89,7 @@ namespace Unturned
         {
             Clear();
             Load();
-            NetworkChat.sendAlert("Config was reloaded.");
+            NetworkChat.sendAlert(Strings.Get("CFG", "ConfigsReloaded"));
         }
 
         #endregion

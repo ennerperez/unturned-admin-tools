@@ -131,7 +131,7 @@ namespace Unturned
         }
         private static void SetDelay(int seconds)
         {
-            if (Timer != null) // && announceTimer.Enabled)
+            if (Timer != null) 
             {
                 Interval = seconds;
                 Timer.Stop();

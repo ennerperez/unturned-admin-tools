@@ -48,7 +48,7 @@ namespace Unturned
                 Shared.Log(ex.ToString());
             }
 
-            Shared.Log(String.Format("Server started. {0} modules loaded.", LoadedModules));
+            Shared.Log(Strings.Get("LOG", "ServerStarted") + " " + String.Format(Strings.Get("GUI", "LoadedModules"), LoadedModules));
 
         }
 
@@ -67,11 +67,11 @@ namespace Unturned
 
             List<string> console = new List<string>();
             console.Add(" ");
-            console.Add("Welcome back to Unturned Server!");
+            console.Add(Strings.Get("GUI","WelcomeMessage"));
             if (Configs.Developer)
             {
-                console.Add(String.Format("Running with Admin Tools v{0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-                console.Add(String.Format("[{0} modules loaded]", Modules.Count));
+                console.Add(String.Format(Strings.Get("GUI", "RunningVersion"), System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+                console.Add(String.Format(Strings.Get("GUI", "LoadedModules"), Modules.Count));
             }
 
             console.Add(" ");

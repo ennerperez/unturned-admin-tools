@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Unturned.AdminTools">
+    <Position X="8.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAABAAAAIAAAQAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>AdminTools.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.AutoSaves" Collapsed="true">
+    <Position X="10" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAggAAAgBAAAAAAIAAAAAAAAAAAEAAgAAAAAAEiAA=</HashCode>
+      <FileName>Modules\AutoSaves.cs</FileName>
+      <NewMemberFileName>AutoSave.cs</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Configs">
+    <Position X="4.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAgIAAAgBAAAAIAAAAAAAAAIAEAQAAoAAAAABAAAA=</HashCode>
+      <FileName>Configs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.DeathMessages" Collapsed="true">
+    <Position X="8.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAABAAAAAAAAAAAAAAAABAQABgAAAAAAAGgA=</HashCode>
+      <FileName>Modules\DeathMessage.cs</FileName>
+      <NewMemberFileName>Modules\AutoSave.cs</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Extensions">
+    <Position X="8.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAIAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Extensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Animals" Collapsed="true">
+    <Position X="4.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAEAAAAABAAAAAAAgAAEAAAACAA=</HashCode>
+      <FileName>Modules\Animals.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Announces" Collapsed="true">
+    <Position X="6.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAgAAAAAAAAIAAAIAAACCAAAAAIEAAgAAAAQBECAA=</HashCode>
+      <FileName>Modules\Announces.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Annoying" Collapsed="true">
+    <Position X="8.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABBIAAAAACBAAAAAAAAIAAAAMAAAAAAAgAAAAAAACAA=</HashCode>
+      <FileName>Modules\Annoying.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Bans" Collapsed="true">
+    <Position X="4.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAiAAAAAggAAAEAAIAAAAAAAAAAABAgAQAAAAECAA=</HashCode>
+      <FileName>Modules\Ban.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Basics" Collapsed="true">
+    <Position X="6.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAgAAAAAAAAAAAEAAIAIAAAAIAAAAAAAgAAAAAAACAA=</HashCode>
+      <FileName>Modules\Basics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Freezes" Collapsed="true">
+    <Position X="10" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAABAAAAAAAAAAAAAAAAAAAAAgAAAAAAACAI=</HashCode>
+      <FileName>Modules\Freezes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Homes" Collapsed="true">
+    <Position X="4.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAgAAAAgAAAIAAAAAAAAgAAAQAAEAEgAAAAEBACAA=</HashCode>
+      <FileName>Modules\Homes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Items" Collapsed="true">
+    <Position X="6.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAgAAAAAAABAAAgIEAAAAAAAAAAAAAoAIAAAAECAA=</HashCode>
+      <FileName>Modules\Items.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Kicks" Collapsed="true">
+    <Position X="8.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAgAAAAAAAAAAAAAAgAAAAAAACAA=</HashCode>
+      <FileName>Modules\Kicks.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Kits" Collapsed="true">
+    <Position X="10" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAJIBAAIQAAAAAAAAAAEAAgAQAAABECAI=</HashCode>
+      <FileName>Modules\Kits.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Locations" Collapsed="true">
+    <Position X="4.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIEAAAAABIDAAAAAQAAEAAACAECAgAAAAABACAA=</HashCode>
+      <FileName>Modules\Locations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Players" Collapsed="true">
+    <Position X="6.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAEAAAACAAAEAAAAABAAAAAAAgAAgAAAACAA=</HashCode>
+      <FileName>Modules\Players.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Specials" Collapsed="true">
+    <Position X="8.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAIAAgAAAAAAACAA=</HashCode>
+      <FileName>Modules\Specials.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Teleports" Collapsed="true">
+    <Position X="10" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAgAAAAAAAIAAAAgIAQAAAACAA=</HashCode>
+      <FileName>Modules\Teleports.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Vehicles" Collapsed="true">
+    <Position X="4.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAEAACDAAAAAAIEAAEAABCBAAAQIgAAAAAAECAA=</HashCode>
+      <FileName>Modules\Vehicles.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Whitelists" Collapsed="true">
+    <Position X="6.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAABCAIAAAAAACACAAAAAAEAggAAwEABASAA=</HashCode>
+      <FileName>Modules\Whitelists.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Zombies" Collapsed="true">
+    <Position X="8.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAEAAAAABAAAAAAAgAACAAAACAA=</HashCode>
+      <FileName>Modules\Zombies.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Shared">
+    <Position X="6.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgABAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Shared.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Module">
+    <Position X="6.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAABAAAAAAAAAAAAAAAAAAEAAgAAAAABECAA=</HashCode>
+      <FileName>Modules\Module.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Unturned.Rectangle" Collapsed="true">
+    <Position X="10" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAADAAAAAIABAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>Modules\Locations.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Unturned.Location" Collapsed="true">
+    <Position X="10" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAgAAAAAAAAAQAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Modules\Locations.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="Unturned.PermissionLevel" Collapsed="true">
+    <Position X="10" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAACAAAAAAAAAAAAAAQgAEAAAAAABAIAAAAAAAAA=</HashCode>
+      <FileName>PermissionLevel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

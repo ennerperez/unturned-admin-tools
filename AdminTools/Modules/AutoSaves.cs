@@ -80,27 +80,27 @@ namespace Unturned
 
         internal static void SaveServer()
         {
-            NetworkChat.sendAlert("Saving world...");
+            NetworkChat.sendAlert(Strings.Get("MOD","AutoSavesSaving"));
             try
             {
                 NetworkTools.save();
             }
             catch
             {
-                Shared.Log("NetworkTools.save() failed to save correctly: ");
-                Shared.Log("Will try to continue saving structures and vehicles manually...");
+                Shared.Log(Strings.Get("MOD", "AutoSavesFailed"));
+                Shared.Log(Strings.Get("MOD", "AutoSavesSavingTryManual"));
                 while (true)
                 {
                     try
                     {
                         saveStructuresManually();
-                        Shared.Log("Structures saved :D");
+                        Shared.Log(Strings.Get("MOD", "AutoSavesSavedStructures"));
                         break;
                     }
                     catch (Exception ex)
                     {
-                        Shared.Log("An error happened while saving structures :(  ; " + ex.Message);
-                        Shared.Log("Retrying...");
+                        Shared.Log(Strings.Get("MOD", "AutoSavesError") + ": " + ex.Message);
+                        Shared.Log(Strings.Get("MOD", "AutoSavesRetrying"));
                     }
                 }
                 while (true)
@@ -108,13 +108,13 @@ namespace Unturned
                     try
                     {
                         SpawnVehicles.save();
-                        Shared.Log("Vehicles saved :D");
+                        Shared.Log(Strings.Get("MOD", "AutoSavesSavedVehicles"));
                         break;
                     }
                     catch (Exception ex)
                     {
-                        Shared.Log("An error happened while saving vehicles :(  ; " + ex.Message);
-                        Shared.Log("Retrying...");
+                        Shared.Log(Strings.Get("MOD", "AutoSavesError") + ": " + ex.Message);
+                        Shared.Log(Strings.Get("MOD", "AutoSavesRetrying"));
                     }
                 }
                 while (true)
@@ -122,20 +122,18 @@ namespace Unturned
                     try
                     {
                         PlayerPrefs.Save();
-                        Shared.Log("PlayerPrefs saved :D");
+                        Shared.Log(Strings.Get("MOD", "AutoSavesSavedPlayerPrefs"));
                         break;
                     }
                     catch (Exception ex)
                     {
-                        Shared.Log("An error happened while saving PlayerPrefs :(  ; " + ex.Message);
-                        Shared.Log("Retrying...");
+                        Shared.Log(Strings.Get("MOD", "AutoSavesError") + ": " + ex.Message);
+                        Shared.Log(Strings.Get("MOD", "AutoSavesRetrying"));
                     }
                 }
             }
-            DateTime now = DateTime.Now;
-            string text = now.ToString("yyyy-MM-dd HH:mm:ss");
-            Shared.Log(now + " : Saved successfully ============================================");
-            NetworkChat.sendAlert("Done.");
+            Shared.Log(Strings.Get("MOD", "AutoSavesSaved"));
+            NetworkChat.sendAlert(Strings.Get("MOD", "AutoSavesDone"));
         }
         internal static void saveStructuresManually()
         {
@@ -148,7 +146,7 @@ namespace Unturned
             }
             catch
             {
-                Shared.Log("Stuck at getting structure list!");
+                Shared.Log(Strings.Get("MOD", "AutoSavesStuckStructures"));
             }
             string text = string.Empty;
             int num = 0;
@@ -182,15 +180,9 @@ namespace Unturned
                     {
                         Shared.Log(string.Concat(new object[]
 						{
-							"Could not get field number ",
-							num3,
-							" of structure number ",
-							num2,
-							". Failed to get ",
-							num,
-							" structures"
+							String.Format(Strings.Get("MOD","AutoSavesFailedStructures"), num3, num2, num)
 						}));
-                        Shared.Log("Cancelling :(");
+                        Shared.Log(Strings.Get("MOD", "AutoSavesCancelling"));
                         return;
                     }
                     num2++;
@@ -212,14 +204,7 @@ namespace Unturned
 				sneakString(text),
 				"_"
 			}));
-            Shared.Log(string.Concat(new object[]
-			{
-				"Manually saved ",
-				list.Count,
-				" structures. (",
-				num,
-				" structures failed to save)"
-			}));
+            Shared.Log(String.Format(Strings.Get("MOD","AutoSavesSavedManual"),list.Count,num));
         }
         internal static string sneakString(string structurestring)
         {

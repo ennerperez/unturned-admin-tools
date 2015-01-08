@@ -32,14 +32,14 @@ namespace Unturned
             {
                 animal.die();
             }
-            NetworkChat.sendAlert(String.Format("{0} has killed {1} animals.", args.sender.name, Animals.Length));
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "AnimalsKill"), args.sender.name, Animals.Length));
         }
 
         internal static void Respawn(CommandArgs args)
         {
             SpawnAnimals.reset();
             Animal[] Animals = UnityEngine.Object.FindObjectsOfType(typeof(Animal)) as Animal[];
-            NetworkChat.sendAlert(String.Format("{0} has re-spawned {1} animals.", args.sender.name, Animals.Length));
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "AnimalsRespawn"), args.sender.name, Animals.Length));
         }
         internal static void Spawn(CommandArgs args)
         {
@@ -73,7 +73,7 @@ namespace Unturned
                 amount--;
                 if ((args.Parameters.Count != 0) & (amount == 0)) { break; }
             }
-            NetworkChat.sendAlert(string.Format("{0} opened the zoo's gate.", args.sender.name));
+            NetworkChat.sendAlert(string.Format(Strings.Get("MOD", "AnimalsWild"), args.sender.name));
 
         }
 
