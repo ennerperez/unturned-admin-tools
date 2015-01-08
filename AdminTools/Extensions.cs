@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Unturned
 {
@@ -27,7 +26,7 @@ namespace Unturned
             return itemPos.ToArray();
         }
 
-        public static bool IsXYValid(this int[] v)
+        public static bool IsValid(this int[] v)
         {
             if (v.Length > 1)
             {
@@ -35,7 +34,7 @@ namespace Unturned
             }
 
             return false;
-            
+
         }
 
     }

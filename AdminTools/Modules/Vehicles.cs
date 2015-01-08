@@ -15,17 +15,17 @@ namespace Unturned
         internal static int Interval = 600;
         internal static bool UseRespawnVehicles = false;
 
-        #endregion       
+        #endregion
 
         internal override void Load()
         {
-            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseRespawnVehicles")))
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "RespawnVehicles")))
             {
-                Configs.File.IniWriteValue("Config", "UseRespawnVehicles", "false");
+                Configs.File.IniWriteValue("Modules", "RespawnVehicles", "false");
                 Configs.File.IniWriteValue("Timers", "RespawnVehicles", "1350");
             }
 
-            Vehicles.UseRespawnVehicles = Boolean.Parse(Configs.File.IniReadValue("Config", "UseRespawnVehicles"));
+            Vehicles.UseRespawnVehicles = Boolean.Parse(Configs.File.IniReadValue("Modules", "RespawnVehicles"));
             Vehicles.Interval = Int32.Parse(Configs.File.IniReadValue("Timers", "RespawnVehicles"));
 
             if (Vehicles.UseRespawnVehicles)
@@ -39,7 +39,18 @@ namespace Unturned
                 }
 
             }
-            
+
+        }
+        internal override void Refresh()
+        {
+
+            if (Vehicles.UseRespawnVehicles)
+            {
+                Vehicles.UseRespawnVehicles = false;
+                SpawnVehicles spawnveh = UnityEngine.Object.FindObjectOfType<SpawnVehicles>();
+                spawnveh.onReady();
+            }
+
         }
 
         internal override IEnumerable<Command> GetCommands()
@@ -87,10 +98,10 @@ namespace Unturned
             }
             NetworkChat.sendAlert(string.Format("{0} has refueled {1} vehicles.", args.sender.name, vehicles.Length));
         }
-        
+
         internal static void Respawn(CommandArgs args)
         {
-            
+
             Reference.Tell(args.sender.networkPlayer, String.Format("Re-spawning {0} vehicles in 3 seconds...", Loot.getCars()));
             respawn();
 
@@ -182,7 +193,7 @@ namespace Unturned
             catch { }
 
             SpawnVehicles.save();
-            
+
             System.Threading.Timer timer;
             timer = new System.Threading.Timer(obj =>
             {

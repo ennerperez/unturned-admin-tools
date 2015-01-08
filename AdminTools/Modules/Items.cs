@@ -21,13 +21,13 @@ namespace Unturned
         internal override void Load()
         {
 
-            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseRespawnItems")))
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "RespawnItems")))
             {
-                Configs.File.IniWriteValue("Config", "UseRespawnItems", "true");
+                Configs.File.IniWriteValue("Modules", "RespawnItems", "true");
                 Configs.File.IniWriteValue("Timers", "RespawnItems", "2700");
             }
 
-            Items.UseRespawnItems = Boolean.Parse(Configs.File.IniReadValue("Config", "UseRespawnItems"));
+            Items.UseRespawnItems = Boolean.Parse(Configs.File.IniReadValue("Modules", "RespawnItems"));
             Items.Interval = Int32.Parse(Configs.File.IniReadValue("Timers", "RespawnItems"));
 
             if (Items.UseRespawnItems)

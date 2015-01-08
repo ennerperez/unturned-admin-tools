@@ -13,29 +13,29 @@ namespace Unturned
 
         private static int updater3 = 0;
         internal static List<String> WhitelistedSteamIDs;
-        
-        internal static bool UseWhitelist = false;
-        internal static bool ShowWhiteListKickMessages = true;
 
-        private static string fileSource = System.IO.Path.Combine(AdminTools.Path, "whitelist.txt");
+        internal static bool UseWhitelists = false;
+        internal static bool KickMessages = true;
+
+        private static string fileSource = System.IO.Path.Combine(AdminTools.AdminPath, "whitelists.txt");
 
         #endregion
 
         internal override void Load()
         {
-            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseWhitelist")))
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "Whitelists")))
             {
-                Configs.File.IniWriteValue("Config", "UseWhitelist", "false");
-                Configs.File.IniWriteValue("Config", "ShowWhiteListKickMessages", "true");
+                Configs.File.IniWriteValue("Modules", "Whitelists", "false");
+                Configs.File.IniWriteValue("Config", "KickMessages", "true");
             }
 
-            Whitelists.UseWhitelist = Boolean.Parse(Configs.File.IniReadValue("Config", "UseWhitelist"));
-            Whitelists.ShowWhiteListKickMessages = Boolean.Parse(Configs.File.IniReadValue("Config", "ShowWhiteListKickMessages"));
+            Whitelists.UseWhitelists = Boolean.Parse(Configs.File.IniReadValue("Modules", "Whitelists"));
+            Whitelists.KickMessages = Boolean.Parse(Configs.File.IniReadValue("Config", "KickMessages"));
 
-            if (Whitelists.UseWhitelist)
+            if (Whitelists.UseWhitelists)
             {
 
-                if (!File.Exists(fileSource)) { Create();}
+                if (!File.Exists(fileSource)) { Create(); }
 
                 WhitelistedSteamIDs = new List<string>();
                 string[] whitelists = System.IO.File.ReadAllLines(fileSource);
@@ -52,10 +52,22 @@ namespace Unturned
                 }
             }
         }
+        internal override void Refresh()
+        {
+            if (Whitelists.UseWhitelists)
+            {
+                Whitelists.KickNonWhitelistedPlayers();
+            }
+
+        }
         internal override void Create()
         {
             System.IO.StreamWriter file = new StreamWriter(fileSource, true);
             file.Close();
+        }
+        internal override void Clear()
+        {
+            Whitelists.WhitelistedSteamIDs = null;
         }
 
         internal override IEnumerable<Command> GetCommands()
@@ -75,12 +87,12 @@ namespace Unturned
 
         internal static void Enable(CommandArgs args)
         {
-            UseWhitelist = true;
+            UseWhitelists = true;
             NetworkChat.sendAlert("Whitelist enabled.");
         }
         internal static void Disable(CommandArgs args)
         {
-            UseWhitelist = false;
+            UseWhitelists = false;
             NetworkChat.sendAlert("Whitelist disabled.");
         }
         internal static void Whitelist(CommandArgs args)
@@ -164,13 +176,13 @@ namespace Unturned
 
         internal static void KickNonWhitelistedPlayers()
         {
-            if (UseWhitelist && updater3 <= 1)
+            if (UseWhitelists && updater3 <= 1)
             {
                 foreach (BetterNetworkUser user in UserList.users)
                 {
                     if (user.networkPlayer != Network.player && !WhitelistedSteamIDs.Contains(user.steamid))
                     {
-                        if (ShowWhiteListKickMessages)
+                        if (KickMessages)
                         {
                             Kicks.kick(user.name, "You are not whitelisted on this server!");
                         }

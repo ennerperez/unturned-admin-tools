@@ -1,8 +1,8 @@
 ﻿using CommandHandler;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace Unturned
@@ -15,23 +15,23 @@ namespace Unturned
         internal static List<Location> MapLocations;
         internal static bool UseLocations = false;
 
-        private static string fileSource = System.IO.Path.Combine(AdminTools.Path, "locations.txt");
+        private static string fileSource = System.IO.Path.Combine(AdminTools.AdminPath, "locations.txt");
 
         #endregion
 
         internal override void Load()
         {
-            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseLocations")))
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "Locations")))
             {
-                Configs.File.IniWriteValue("Config", "UseLocations", "false");
+                Configs.File.IniWriteValue("Modules", "Locations", "false");
             }
 
-            Locations.UseLocations = Boolean.Parse(Configs.File.IniReadValue("Config", "UseLocations"));
+            Locations.UseLocations = Boolean.Parse(Configs.File.IniReadValue("Modules", "Locations"));
 
             if (Locations.UseLocations)
             {
 
-                if (!File.Exists(fileSource)) { Create();}
+                if (!File.Exists(fileSource)) { Create(); }
 
                 MapLocations = new List<Location>();
                 string[] locations = System.IO.File.ReadAllLines(fileSource);
@@ -42,7 +42,7 @@ namespace Unturned
                         try
                         {
                             string[] values = item.Split(',');
-                            MapLocations.Add(new Location(values[0], new Vector2(float.Parse(values[1]), float.Parse(values[2])), float.Parse(values[3])));
+                            MapLocations.Add(new Location() { Name = values[0], Point = new Vector2(float.Parse(values[1]), float.Parse(values[2])), Radius = float.Parse(values[3]) });
                         }
                         catch (Exception ex)
                         {
@@ -95,6 +95,10 @@ namespace Unturned
 
             file.Close();
         }
+        internal override void Clear()
+        {
+            Locations.MapLocations = null;
+        }
 
         internal override IEnumerable<Command> GetCommands()
         {
@@ -111,7 +115,7 @@ namespace Unturned
         {
             return null;
         }
-        
+
         #region Commands
 
         internal static void Get(CommandArgs args)
@@ -147,7 +151,7 @@ namespace Unturned
             }
             else
             {
-                MapLocations.Add(new Location(locName, _point, rad));
+                MapLocations.Add(new Location() { Name = locName, Point = _point, Radius = rad });
                 if (Configs.Developer) { Get(args); }
             }
 
@@ -218,7 +222,7 @@ namespace Unturned
             if (Configs.Developer)
             {
                 Inventory inventory = args.sender.player.gameObject.GetComponent<Inventory>();
-                if (!inventory.Find(28000).IsXYValid())
+                if (!inventory.Find(28000).IsValid())
                 {
                     inventory.tryAddItem(28000, 1);
                 }
@@ -231,24 +235,22 @@ namespace Unturned
 
     #region Structures
 
-    public class Rectangle
+    public struct Rectangle
     {
         public float X1 { get; set; }
         public float Y1 { get; set; }
         public float X2 { get; set; }
         public float Y2 { get; set; }
 
-        public Rectangle()
-        {
-        }
+        //public Rectangle() {}
 
-        public Rectangle(float x1, float y1, float x2, float y2)
-        {
-            this.X1 = x1;
-            this.Y1 = y1;
-            this.X2 = x2;
-            this.Y2 = y2;
-        }
+        //public Rectangle(float x1, float y1, float x2, float y2)
+        //{
+        //    this.X1 = x1;
+        //    this.Y1 = y1;
+        //    this.X2 = x2;
+        //    this.Y2 = y2;
+        //}
 
         public bool Contains(Vector2 p)
         {
@@ -258,21 +260,20 @@ namespace Unturned
 
     }
 
-    public class Location
+    public struct Location
     {
         public string Name { get; set; }
         public Vector2 Point { get; set; }
         public float Radius { get; set; }
 
-        public Location()
-        { }
+        //public Location() { }
 
-        public Location(string name, Vector2 point, float radius = 100)
-        {
-            this.Name = name;
-            this.Point = point;
-            this.Radius = radius;
-        }
+        //public Location(string name, Vector2 point, float radius = 100)
+        //{
+        //    this.Name = name;
+        //    this.Point = point;
+        //    this.Radius = radius;
+        //}
 
         public Rectangle GetArea()
         {

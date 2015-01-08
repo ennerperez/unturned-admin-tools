@@ -3,6 +3,7 @@ unturned-admin-tools
 
 ###Version 1.0.0.2
 
+* Modules standardized
 * Integrated AutoSave & DeathMessage
 * Unified settings and logs
 

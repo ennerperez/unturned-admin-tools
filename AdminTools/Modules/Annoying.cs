@@ -15,6 +15,32 @@ namespace Unturned
 
         #endregion
 
+        internal override void Refresh()
+        {
+
+            if (Annoying.VanishedPlayers.Count > 0)
+            {
+                foreach (KeyValuePair<String, Vector3> entry in Annoying.VanishedPlayers)
+                {
+                    BetterNetworkUser user = UserList.getUserFromSteamID(entry.Key);
+                    if (user != null)
+                    {
+                        foreach (NetworkPlayer networkplayer in Network.connections)
+                        {
+                            if (Network.player != networkplayer && networkplayer != user.networkPlayer)
+                            {
+                                user.player.networkView.RPC("tellStatePosition", networkplayer, new object[] { new Vector3(0, 0, 0), user.rotation });
+
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
+        }
+
         internal override IEnumerable<Command> GetCommands()
         {
             List<Command> _return = new List<Command>();
@@ -31,7 +57,7 @@ namespace Unturned
         }
 
         #region Commands
-        
+
         internal static void God(CommandArgs args)
         {
             Life life = args.sender.player.gameObject.GetComponent<Life>();

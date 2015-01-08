@@ -1,10 +1,7 @@
 ﻿using CommandHandler;
-using Ini;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
 
 namespace Unturned
@@ -14,9 +11,9 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
-        internal const string Path = "Unturned_Data/Managed/mods/Admin";
+        internal const string AdminPath = "Unturned_Data/Managed/mods/Admin";
         internal static List<Module> Modules = new List<Module>();
-        //public string lastUsedCommand = "none";
+        internal static int LoadedModules;
 
         #endregion
 
@@ -34,7 +31,6 @@ namespace Unturned
                         Modules.Add((Module)Activator.CreateInstance(type, null));
                     }
                 }
-                //Modules.Sort();
 
                 foreach (Module item in Modules)
                 {
@@ -43,6 +39,7 @@ namespace Unturned
                         CommandList.add(citem);
                     }
                     item.Load();
+                    LoadedModules++;
                 }
 
             }
@@ -51,57 +48,18 @@ namespace Unturned
                 Shared.Log(ex.ToString());
             }
 
-            Shared.Log("Server started.");
+            Shared.Log(String.Format("Server started. {0} modules loaded.", LoadedModules));
 
         }
 
         public void Update()
         {
-            if (Whitelists.UseWhitelist)
+
+            foreach (Module item in Modules)
             {
-                Whitelists.KickNonWhitelistedPlayers();
+                item.Refresh();
             }
 
-            if (Vehicles.UseRespawnVehicles)
-            {
-                Vehicles.UseRespawnVehicles = false;
-                SpawnVehicles spawnveh = UnityEngine.Object.FindObjectOfType<SpawnVehicles>();
-                spawnveh.onReady();
-            }
-            if (Freezes.frozenPlayers.Count > 0)
-            {
-                foreach (KeyValuePair<String, Vector3> entry in Freezes.frozenPlayers)
-                {
-                    BetterNetworkUser user = UserList.getUserFromSteamID(entry.Key);
-                    if (user != null)
-                    {
-                        user.player.transform.position = entry.Value;
-
-                        user.player.networkView.RPC("tellStatePosition", user.player.networkView.owner, new object[] { entry.Value, user.player.transform.rotation });
-                    }
-
-                }
-            }
-            if (Annoying.VanishedPlayers.Count > 0)
-            {
-                foreach (KeyValuePair<String, Vector3> entry in Annoying.VanishedPlayers)
-                {
-                    BetterNetworkUser user = UserList.getUserFromSteamID(entry.Key);
-                    if (user != null)
-                    {
-                        foreach (NetworkPlayer networkplayer in Network.connections)
-                        {
-                            if (Network.player != networkplayer && networkplayer != user.networkPlayer)
-                            {
-                                user.player.networkView.RPC("tellStatePosition", networkplayer, new object[] { new Vector3(0, 0, 0), user.rotation });
-
-                            }
-                        }
-
-                    }
-
-                }
-            }
         }
 
         public void OnGUI()
@@ -110,7 +68,11 @@ namespace Unturned
             List<string> console = new List<string>();
             console.Add(" ");
             console.Add("Welcome back to Unturned Server!");
-            //console.Add(Unturned.Strings.Welcome);
+            if (Configs.Developer)
+            {
+                console.Add(String.Format("Running with Admin Tools v{0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+                console.Add(String.Format("[{0} modules loaded]", Modules.Count));
+            }
 
             console.Add(" ");
 
@@ -122,6 +84,10 @@ namespace Unturned
                     item.steamid, item.reputation, item.networkPlayer.ipAddress, item.name));
                 }
             }
+            foreach (Module item in Modules)
+            {
+                item.Print();
+            }
 
             GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
 
@@ -131,8 +97,8 @@ namespace Unturned
             }
             GUILayout.EndArea();
 
+
         }
-                
 
     }
 

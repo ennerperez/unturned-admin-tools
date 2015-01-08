@@ -15,19 +15,19 @@ namespace Unturned
         internal static Dictionary<String, Dictionary<string, int[]>> PlayerKits;
         internal static bool UsePlayerKits = false;
 
-        private static string fileSource = System.IO.Path.Combine(AdminTools.Path, "kits.txt");
+        private static string fileSource = System.IO.Path.Combine(AdminTools.AdminPath, "kits.txt");
 
         #endregion
 
         internal override void Load()
         {
 
-            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UsePlayerKits")))
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "Kits")))
             {
-                Configs.File.IniWriteValue("Config", "UsePlayerKits", "false");
+                Configs.File.IniWriteValue("Modules", "Kits", "false");
             }
 
-            Kits.UsePlayerKits = Boolean.Parse(Configs.File.IniReadValue("Config", "UsePlayerKits"));
+            Kits.UsePlayerKits = Boolean.Parse(Configs.File.IniReadValue("Modules", "Kits"));
 
             if (Kits.UsePlayerKits)
             {
@@ -93,6 +93,10 @@ namespace Unturned
 
             file.Close();
 
+        }
+        internal override void Clear()
+        {
+            Kits.PlayerKits = null;
         }
 
         internal override IEnumerable<Command> GetCommands()

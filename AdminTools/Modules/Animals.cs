@@ -8,17 +8,6 @@ namespace Unturned
     internal class Animals : Module
     {
 
-        #region TOP: global variables are initialized here
-
-        #endregion
-
-        internal override void Load()
-        {
-        }
-        internal override void Create()
-        {
-        }
-        
         internal override IEnumerable<Command> GetCommands()
         {
             List<Command> _return = new List<Command>();

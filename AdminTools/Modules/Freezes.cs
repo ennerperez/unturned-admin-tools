@@ -14,6 +14,26 @@ namespace Unturned
 
         #endregion
 
+        internal override void Refresh()
+        {
+
+            if (Freezes.frozenPlayers.Count > 0)
+            {
+                foreach (KeyValuePair<String, Vector3> entry in Freezes.frozenPlayers)
+                {
+                    BetterNetworkUser user = UserList.getUserFromSteamID(entry.Key);
+                    if (user != null)
+                    {
+                        user.player.transform.position = entry.Value;
+
+                        user.player.networkView.RPC("tellStatePosition", user.player.networkView.owner, new object[] { entry.Value, user.player.transform.rotation });
+                    }
+
+                }
+            }
+
+        }
+
         internal override IEnumerable<Command> GetCommands()
         {
             List<Command> _return = new List<Command>();

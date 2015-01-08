@@ -1,72 +1,66 @@
 ﻿using CommandHandler;
-using Ini;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
 
 namespace Unturned
 {
-    public class DeathMessage : MonoBehaviour
+    internal class DeathMessages : Module
     {
 
         #region TOP: global variables are initialized here
 
-        private FieldInfo[] lifefields = typeof(Life).GetFields();
-        private List<Player> announcedDeadPeople = new List<Player>();
-        //private Player[] players = UnityEngine.Object.FindObjectsOfType<Player>();
-        private float lastupdate = 0f;
+        internal FieldInfo[] lifefields = typeof(Life).GetFields();
+        internal List<Player> announcedDeadPeople = new List<Player>();
+        internal float lastupdate = 0f;
 
         internal static bool UseDeathMessage = true;
 
         #endregion
 
-        internal void Load()
+        internal override void Load()
         {
-            Configs.Load();
 
-            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseDeathMessage")))
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "DeathMessages")))
             {
-                Configs.File.IniWriteValue("Config", "UseDeathMessage", "true");
+                Configs.File.IniWriteValue("Modules", "DeathMessages", "true");
             }
 
-            DeathMessage.UseDeathMessage = Boolean.Parse(Configs.File.IniReadValue("Config", "UseDeathMessage"));
+            DeathMessages.UseDeathMessage = Boolean.Parse(Configs.File.IniReadValue("Modules", "DeathMessages"));
 
-            //if (DeathMessage.UseDeathMessage)
-            //{
-            //}
         }
-        internal static void Create()
+        internal override void Refresh()
         {
-        }
-
-        public void Start()
-        {
-            Load();
-        }
-
-        public void Update()
-        {
-            if (DeathMessage.UseDeathMessage)
+            if (DeathMessages.UseDeathMessage)
             {
                 if (Time.realtimeSinceStartup - this.lastupdate >= 3f)
                 {
                     Player[] players = UnityEngine.Object.FindObjectsOfType<Player>();
                     this.lastupdate = Time.realtimeSinceStartup;
                 }
-                this.CheckDeadPlayers();
+                CheckDeadPlayers();
             }
         }
 
-        public void OnGui()
+        internal override IEnumerable<Command> GetCommands()
         {
+            List<Command> _return = new List<Command>();
+
+            return _return;
         }
+        internal override String GetHelp()
+        {
+            return null;
+        }
+
+        #region Commands
+
+        #endregion
 
         #region Private calls
 
-        private void CheckDeadPlayers()
+        internal void CheckDeadPlayers()
         {
             try
             {

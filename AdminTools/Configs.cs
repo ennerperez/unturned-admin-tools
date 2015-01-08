@@ -2,7 +2,6 @@
 using Ini;
 using System;
 using System.IO;
-using System.Text;
 
 namespace Unturned
 {
@@ -11,26 +10,27 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
-        private static Boolean isLoaded;
+        private static Boolean IsLoaded;
 
         internal static bool Developer = false;
-        internal static bool DeathMessage = false;
+        internal static bool Logging = true;
 
-        internal static bool Logging = false;
+        internal static bool Console = true;
+        internal static bool Confirmation = true;
 
-        internal static string FileSource = System.IO.Path.Combine(AdminTools.Path, "config.ini");
-        internal static IniFile File =  new IniFile(Configs.FileSource);
+        private static string Source = System.IO.Path.Combine(AdminTools.AdminPath, "config.ini");
+        internal static IniFile File = new IniFile(Configs.Source);
 
         #endregion
 
         internal static void Load()
         {
 
-            if (Configs.isLoaded) { return; }
+            if (Configs.IsLoaded) { return; }
 
-            Directory.CreateDirectory(AdminTools.Path);
-            if (!System.IO.File.Exists(Configs.FileSource)) { Create(); }
-                      
+            Directory.CreateDirectory(AdminTools.AdminPath);
+            if (!System.IO.File.Exists(Configs.Source)) { Save(); }
+
 
             ////things that need to be added to existing files
             //if (Configs.File.IniReadValue("Config", "WhitelistKickMessages").Equals(""))
@@ -53,27 +53,26 @@ namespace Unturned
             Configs.Developer = Boolean.Parse(Configs.File.IniReadValue("Config", "Developer"));
             Configs.Logging = Boolean.Parse(Configs.File.IniReadValue("Config", "Logging"));
 
-            Configs.isLoaded = true;
+            Configs.IsLoaded = true;
 
         }
-        internal static void Create()
+        internal static void Save()
         {
 
-            Configs.File.IniWriteValue("Config", "Developer", "false");
-            Configs.File.IniWriteValue("Config", "Logging", "true");
+            Configs.File.IniWriteValue("Config", "Developer", (Configs.Developer) ? "true" : "false");
+            Configs.File.IniWriteValue("Config", "Logging", (Configs.Logging) ? "true" : "false");
 
-            Configs.File.IniWriteValue("Security", "Console", "true");
-            Configs.File.IniWriteValue("Security", "Password", randomString(8));
-            Configs.File.IniWriteValue("Security", "Confirmation", "false");                      
+            Configs.File.IniWriteValue("Security", "Console", (Configs.Console) ? "true" : "false");
+            Configs.File.IniWriteValue("Security", "Password", Shared.RandomString(8));
+            Configs.File.IniWriteValue("Security", "Confirmation", (Configs.Confirmation) ? "true" : "false");
 
         }
         internal static void Clear()
         {
-            Locations.MapLocations = null;
-            Whitelists.WhitelistedSteamIDs = null;
-            Homes.playerHomes = null;
-            Kits.PlayerKits = null;
-            Announces.Messages = null;
+            foreach (Module item in AdminTools.Modules)
+            {
+                item.Clear();
+            }
         }
 
         internal static void GetCommands()
@@ -88,24 +87,6 @@ namespace Unturned
             Clear();
             Load();
             NetworkChat.sendAlert("Config was reloaded.");
-        }
-
-        #endregion
-
-        #region Private calls
-
-        private static System.Random random = new System.Random((int)DateTime.Now.Ticks);
-        private static string randomString(int size)
-        {
-            StringBuilder builder = new StringBuilder();
-            char ch;
-            for (int i = 0; i < size; i++)
-            {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder.Append(ch);
-            }
-
-            return builder.ToString();
         }
 
         #endregion

@@ -8,6 +8,7 @@ namespace Unturned
 {
     internal class Announces : Module
     {
+
         #region TOP: global variables are initialized here
 
         private static System.Timers.Timer Timer;
@@ -17,19 +18,19 @@ namespace Unturned
 
         internal static Stack<String> Messages;
 
-        private static string fileSource = System.IO.Path.Combine(AdminTools.Path, "announces.txt");
+        private static string fileSource = System.IO.Path.Combine(AdminTools.AdminPath, "announces.txt");
 
         #endregion
 
         internal override void Load()
         {
-            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseAnnounces")))
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "Announces")))
             {
-                Configs.File.IniWriteValue("Config", "UseAnnounces", "true");
+                Configs.File.IniWriteValue("Modules", "Announces", "true");
                 Configs.File.IniWriteValue("Timers", "Announces", "600");
             }
 
-            Announces.UseAnnounces = Boolean.Parse(Configs.File.IniReadValue("Config", "UseAnnounces"));
+            Announces.UseAnnounces = Boolean.Parse(Configs.File.IniReadValue("Modules", "Announces"));
             Announces.Interval = Int32.Parse(Configs.File.IniReadValue("Timers", "Announces"));
 
             if (Announces.UseAnnounces)
@@ -72,6 +73,10 @@ namespace Unturned
             file.WriteLine("This line will be announced 40 minutes after injecting  (4x interval)");
             file.WriteLine("And so forth.. then it will go back to the 1st line      (4x interval)");
             file.Close();
+        }
+        internal override void Clear()
+        {
+            Announces.Messages = null;
         }
 
         internal override IEnumerable<Command> GetCommands()
@@ -136,7 +141,6 @@ namespace Unturned
         }
 
         #endregion
-
 
     }
 }

@@ -1,73 +1,57 @@
 ﻿using CommandHandler;
-using Ini;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Timers;
 using UnityEngine;
 
 namespace Unturned
 {
-    public class AutoSave : MonoBehaviour
+    internal class AutoSaves : Module
     {
 
         #region TOP: global variables are initialized here
 
         private static System.Timers.Timer Timer;
-        internal static int Interval = 600;
 
+        internal static int Interval = 600;
         internal static bool UseAutoSave = false;
-        
+
         #endregion
 
-        internal void Load()
+        internal override void Load()
         {
 
-            Configs.Load();
-
-            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UseAutoSave"))) 
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "AutoSaves")))
             {
-                Configs.File.IniWriteValue("Config", "UseAutoSave", "true");
-                Configs.File.IniWriteValue("Timers", "AutoSave", "600");
+                Configs.File.IniWriteValue("Modules", "AutoSaves", "true");
+                Configs.File.IniWriteValue("Timers", "AutoSaves", "600");
             }
 
-            AutoSave.UseAutoSave = Boolean.Parse(Configs.File.IniReadValue("Config", "UseAutoSave"));
-            AutoSave.Interval = Int32.Parse(Configs.File.IniReadValue("Timers", "AutoSave"));                       
+            AutoSaves.UseAutoSave = Boolean.Parse(Configs.File.IniReadValue("Modules", "AutoSaves"));
+            AutoSaves.Interval = Int32.Parse(Configs.File.IniReadValue("Timers", "AutoSaves"));
 
-            if (AutoSave.UseAutoSave)
+            if (AutoSaves.UseAutoSave)
             {
-                Timer = new System.Timers.Timer(AutoSave.Interval * 1000);
+                Timer = new System.Timers.Timer(AutoSaves.Interval * 1000);
                 Timer.Elapsed += autoSaveTimer_Elapsed;
                 Timer.Enabled = true;
             }
-          
+
         }
-        internal static void Create()
+        internal override void Refresh()
         {
+            return;
         }
 
-        public void Start()
-        {
-
-            Load();
-
-            foreach (Command citem in GetCommands())
-            {
-                CommandList.add(citem);
-            }        
-                    
-        }
-
-        internal IEnumerable<Command> GetCommands()
+        internal override IEnumerable<Command> GetCommands()
         {
             List<Command> _return = new List<Command>();
-            _return.Add(new Command(PermissionLevel.Admin.ToInt(), SaveCommand, "save", "saveserver")); 
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), SaveCommand, "save", "saveserver"));
             return _return;
         }
-        internal String GetHelp()
+        internal override String GetHelp()
         {
             return null;
         }
@@ -246,11 +230,9 @@ namespace Unturned
                 text += array[i] + '\u2000';
             }
             return text;
-        }      
+        }
 
         #endregion
-
-        
 
     }
 }

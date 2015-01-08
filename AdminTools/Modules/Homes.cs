@@ -11,29 +11,29 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
-        internal static Dictionary<String, Vector3> playerHomes;
+        internal static Dictionary<String, Vector3> PlayerHomes;
         internal static bool UsePlayerHomes = false;
 
-        private static string fileSource = System.IO.Path.Combine(AdminTools.Path, "homes.txt");
+        private static string fileSource = System.IO.Path.Combine(AdminTools.AdminPath, "homes.txt");
 
         #endregion
 
         internal override void Load()
         {
 
-            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "UsePlayerHomes")))
+            if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "Homes")))
             {
-                Configs.File.IniWriteValue("Config", "UsePlayerHomes", "false");
+                Configs.File.IniWriteValue("Modules", "Homes", "false");
             }
 
-            Homes.UsePlayerHomes = Boolean.Parse(Configs.File.IniReadValue("Config", "UsePlayerHomes"));
+            Homes.UsePlayerHomes = Boolean.Parse(Configs.File.IniReadValue("Modules", "Homes"));
 
             if (Homes.UsePlayerHomes)
             {
 
                 if (!File.Exists(fileSource)) { Create(); }
 
-                playerHomes = new Dictionary<String, Vector3>();
+                PlayerHomes = new Dictionary<String, Vector3>();
                 string[] homes = System.IO.File.ReadAllLines(fileSource);
                 foreach (string item in homes)
                 {
@@ -46,7 +46,7 @@ namespace Unturned
                         String y = location[1];
                         String z = location[2];
                         Vector3 loc = new Vector3(Convert.ToSingle(x), Convert.ToSingle(y), Convert.ToSingle(z));
-                        playerHomes.Add(id, loc);
+                        PlayerHomes.Add(id, loc);
                     }
                     catch (Exception ex)
                     {
@@ -61,6 +61,10 @@ namespace Unturned
         {
             System.IO.StreamWriter file = new StreamWriter(fileSource, true);
             file.Close();
+        }
+        internal override void Clear()
+        {
+            Homes.PlayerHomes = null;
         }
 
         internal override IEnumerable<Command> GetCommands()
@@ -101,8 +105,8 @@ namespace Unturned
 
         private static void setHome(string steamID, Vector3 location)
         {
-            string fileSource = System.IO.Path.Combine(AdminTools.Path, "homes.txt");
-            if (playerHomes.ContainsKey(steamID))
+            string fileSource = System.IO.Path.Combine(AdminTools.AdminPath, "homes.txt");
+            if (PlayerHomes.ContainsKey(steamID))
             {
                 string[] lines = System.IO.File.ReadAllLines(fileSource);
                 File.Delete(fileSource);
@@ -122,11 +126,11 @@ namespace Unturned
             System.IO.StreamWriter file2 = new StreamWriter(fileSource, true);
             file2.WriteLine(String.Format("{0}:{1},{2},{3}", steamID, location.x, location.y, location.z));
             file2.Close();
-            playerHomes[steamID] = location;
+            PlayerHomes[steamID] = location;
         }
         private static void home(BetterNetworkUser user)
         {
-            Teleports.userTo(user, playerHomes[user.steamid]);
+            Teleports.userTo(user, PlayerHomes[user.steamid]);
         }
 
         #endregion
