@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text;
 
 namespace Unturned
 {
@@ -32,7 +33,13 @@ namespace Unturned
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+
+            //sb.AppendLine(Strings.Get("HLP", "AnimalHelp"));
+            //sb.AppendLine(Strings.Get("HLP", "AnimalsKillsHelp"));
+            //sb.AppendLine(Strings.Get("HLP", "AnimalsWildHelp"));
+
+            return sb.ToString();
         }
 
         #region Commands
@@ -50,7 +57,7 @@ namespace Unturned
             {
                 //userToBeBanned = UserList.users[number];
                 tempBanName = userToBeBanned.name;
-                Reference.Tell(args.sender.networkPlayer, String.Format("Reason for banning {0} ?  /reason <reason> to ban.", tempBanName));
+                Reference.Tell(args.sender.networkPlayer, String.Format(Strings.File.IniReadValue("HLP", "BansBanReasonHelp"), tempBanName));
 
             }
             //else
@@ -65,11 +72,11 @@ namespace Unturned
             String name = args.ParametersAsString;
             if (unban(name))
             {
-                Reference.Tell(args.sender.networkPlayer, String.Format("{0} was removed from the ban list.", name));
+                Reference.Tell(args.sender.networkPlayer, String.Format(Strings.File.IniReadValue("MOD", "BansUnBanDone"), name));
             }
             else
             {
-                Reference.Tell(args.sender.networkPlayer, String.Format("Could not find {0} in the list of banned players.", name));
+                Reference.Tell(args.sender.networkPlayer, String.Format(Strings.File.IniReadValue("MOD", "BansUnBanFailed"), name));
             }
         }
         internal static void ReasonForBan(CommandArgs args)

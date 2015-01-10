@@ -1,6 +1,7 @@
 ﻿using CommandHandler;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Unturned
@@ -13,13 +14,19 @@ namespace Unturned
             List<Command> _return = new List<Command>();
             _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "animal", "a"));
             _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnanimals", "ar"));
-            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Kill, "killanimal", "ak"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Kill, "killanimals", "ak"));
             _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Wild, "wild", "aw")); // Use /wild <#>
             return _return;
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(Strings.Get("HLP", "AnimalHelp"));
+            sb.AppendLine(Strings.Get("HLP", "AnimalsKillsHelp"));
+            sb.AppendLine(Strings.Get("HLP", "AnimalsWildHelp"));
+
+            return sb.ToString();
         }
 
         #region Commands
@@ -32,7 +39,7 @@ namespace Unturned
             {
                 animal.die();
             }
-            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "AnimalsKill"), args.sender.name, Animals.Length));
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "AnimalsKills"), args.sender.name, Animals.Length));
         }
 
         internal static void Respawn(CommandArgs args)
@@ -73,7 +80,7 @@ namespace Unturned
                 amount--;
                 if ((args.Parameters.Count != 0) & (amount == 0)) { break; }
             }
-            NetworkChat.sendAlert(string.Format(Strings.Get("MOD", "AnimalsWild"), args.sender.name));
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "AnimalsWild"), args.sender.name));
 
         }
 

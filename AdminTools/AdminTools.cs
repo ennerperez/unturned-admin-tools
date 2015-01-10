@@ -1,5 +1,6 @@
 ﻿using CommandHandler;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -48,8 +49,33 @@ namespace Unturned
                 Shared.Log(ex.ToString());
             }
 
+            CommandList.add(PermissionLevel.All.ToInt(), PrintHelp, "help", "?");
+
             Shared.Log(Strings.Get("LOG", "ServerStarted") + " " + String.Format(Strings.Get("GUI", "LoadedModules"), LoadedModules));
 
+        }
+
+        internal static void PrintHelp(CommandArgs args)
+        {
+            if (args.Parameters.Count > 0)
+            {
+         
+                Module mod = Modules.FirstOrDefault(s => s.GetType().ToString().ToLower().EndsWith(args.Parameters[0].ToLower()));
+                if (mod != null)
+                {
+                    string help = mod.GetHelp();
+                    Reference.Tell(args.sender.networkPlayer, help);
+                }
+                else
+                {
+                    Reference.Tell(args.sender.networkPlayer, "Module was not found.");
+                }
+            }
+            else
+            {
+                string[] modu = Modules.Select(s => s.GetType().ToString().Split('.').Last().ToLower()).ToArray();
+                Reference.Tell(args.sender.networkPlayer,string.Format("Use [help,?] <[{0}]>", String.Join(", ", modu)));
+            }
         }
 
         public void Update()

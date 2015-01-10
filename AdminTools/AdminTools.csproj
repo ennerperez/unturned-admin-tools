@@ -54,7 +54,7 @@
     <Compile Include="Modules\AutoSaves.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Modules\Ban.cs">
+    <Compile Include="Modules\Bans.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Modules\Basics.cs">

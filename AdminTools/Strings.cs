@@ -36,10 +36,13 @@ namespace Unturned
             Strings.File.IniWriteValue("GUI", "LoadedModules", "[{0} modules loaded]");
             Strings.File.IniWriteValue("LOG", "ServerStarted", "Server started.");
             Strings.File.IniWriteValue("CFG", "ConfigsReloaded", "Configs was reloaded.");
-
-            Strings.File.IniWriteValue("MOD", "AnimalsKill", "{0} has killed {1} animals.");
+            
+            Strings.File.IniWriteValue("MOD", "AnimalsKills", "{0} has killed {1} animals.");
             Strings.File.IniWriteValue("MOD", "AnimalsRespawn", "{0} has re-spawned {1} animals.");
             Strings.File.IniWriteValue("MOD", "AnimalsWild", "{0} opened the zoo's gate.");
+            Strings.File.IniWriteValue("HLP", "AnimalHelp", "[animal,a] -> Spawn a random animal.");
+            Strings.File.IniWriteValue("HLP", "AnimalsKillsHelp", "[killanimals,ak] -> Kills animals.");
+            Strings.File.IniWriteValue("HLP", "AnimalsWildHelp", "[wild,aw] -> Spawn all the animals.");
 
             Strings.File.IniWriteValue("MOD", "AnnoyingGodOn", "{0} is a God.");
             Strings.File.IniWriteValue("MOD", "AnnoyingGodOff", "{0} is mortal again.");
@@ -66,6 +69,9 @@ namespace Unturned
             Strings.File.IniWriteValue("MOD", "AutoSavesCancelling", "Canceling...");
             Strings.File.IniWriteValue("MOD", "AutoSavesSavedManual", "Manually saved {0} structures. ({1} structures failed to save)");
 
+            Strings.File.IniWriteValue("MOD", "BansUnBanDone", "{0} was removed from the ban list.");
+            Strings.File.IniWriteValue("MOD", "BansUnBanFailed", "Could not find {0} in the list of banned players.");
+            Strings.File.IniWriteValue("HLP", "BansBanReasonHelp", "Reason for banning {0} ?  /reason <reason> to ban.");
 
         }
 
