@@ -18,7 +18,7 @@ namespace Unturned
             _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Spawn, "zombie", "z"));
             _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Respawn, "respawnzombies", "zr"));
             _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Kill, "killzombies", "zk"));
-            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Apocalypse, "apocalypse", "za"));
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Land, "zombieland", "zl"));
             return _return;
         }
         internal override String GetHelp()
@@ -58,7 +58,7 @@ namespace Unturned
             NetworkChat.sendAlert(String.Format("{0} has killed {1} zombies.", args.sender.name, Zombies.Length));
         }
 
-        internal static void Apocalypse(CommandArgs args)
+        internal static void Land(CommandArgs args)
         {
 
             SpawnAnimals.reset();
@@ -68,7 +68,7 @@ namespace Unturned
             int amount = (int)Math.Round((decimal)mapZombies.Length / mapUsers.Length);
             if (args.Parameters.Count > 0) { amount = int.Parse(args.Parameters[0]); }
 
-            // Security margen
+            // Security margin
             if ((amount > 20) || (amount > mapZombies.Length)) { amount = 20; }
 
             foreach (BetterNetworkUser item in mapUsers)
