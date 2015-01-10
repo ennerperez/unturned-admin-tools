@@ -16,5 +16,5 @@ unturned-admin-tools
 ###Version 1.0.0.0
 
 * Name and text normalized
-* Separated modules for more independence
+* Separated modules for more developing independence
 * Reorganized Nessi AdminTools
