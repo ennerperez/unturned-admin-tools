@@ -44,6 +44,16 @@ namespace Unturned
             Strings.File.IniWriteValue("HLP", "AnimalsKillsHelp", "[killanimals,ak] -> Kills animals.");
             Strings.File.IniWriteValue("HLP", "AnimalsWildHelp", "[wild,aw] -> Spawn all the animals.");
 
+            Strings.File.IniWriteValue("HLP", "AnnounceHelp", "[repeat,say,announce] <message> -> Send a message to the server.");
+            Strings.File.IniWriteValue("HLP", "AnnounceDelayHelp", "[setannouncedelay, adelay] <seconds> -> Set the announcement delay.");
+
+
+
+
+
+
+
+
             Strings.File.IniWriteValue("MOD", "AnnoyingGodOn", "{0} is a God.");
             Strings.File.IniWriteValue("MOD", "AnnoyingGodOff", "{0} is mortal again.");
 

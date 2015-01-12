@@ -3,7 +3,7 @@
   <Class Name="Unturned.AdminTools">
     <Position X="8.25" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAAAACAAAABAAAAIAAAQAAAAAAAAAACAAAAAAAA=</HashCode>
+      <HashCode>AAQAAAAAACAAAABAAAIIAAAQAAAAAAAAAACAAAAAAAA=</HashCode>
       <FileName>AdminTools.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -54,7 +54,7 @@
   <Class Name="Unturned.Annoying" Collapsed="true">
     <Position X="8.25" Y="1" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABBIAAAAACBAAAAAAAAIAAAAMAAAAAAAgAAAAAAACAA=</HashCode>
+      <HashCode>ABBIgAAAACBAAAAAAAAIAAAAMCAAAAAAgAAAAAAACAA=</HashCode>
       <FileName>Modules\Annoying.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -62,7 +62,7 @@
     <Position X="4.75" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAiAAAAAggAAAEAAIAAAAAAAAAAABAgAQAAAAECAA=</HashCode>
-      <FileName>Modules\Ban.cs</FileName>
+      <FileName>Modules\Bans.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Unturned.Basics" Collapsed="true">
@@ -168,6 +168,13 @@
     <TypeIdentifier>
       <HashCode>AAAAgIAAAABAAAAAAAAAAAAAAAAAAEAAgAAAAABECAA=</HashCode>
       <FileName>Modules\Module.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Strings">
+    <Position X="3" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAgAAAABIAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strings.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="Unturned.Rectangle" Collapsed="true">
