@@ -1,6 +1,7 @@
 ﻿using CommandHandler;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Unturned
@@ -37,13 +38,19 @@ namespace Unturned
         internal override IEnumerable<Command> GetCommands()
         {
             List<Command> _return = new List<Command>();
-            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Freeze, "freeze", "pf")); // Use /freeze <[playername,all]>
-            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), UnFreeze, "unfreeze", "puf")); // Use /unfreeze <[playername,all]>
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), Freeze, "freeze", "pf")); 
+            _return.Add(new Command(PermissionLevel.Moderator.ToInt(), UnFreeze, "unfreeze", "puf")); 
             return _return;
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(Strings.Get("HLP", "FreezeFreezeHelp"));
+            sb.AppendLine(Strings.Get("HLP", "FreezeUnFreezeHelp"));
+
+
+            return sb.ToString();
         }
 
         #region Commands
@@ -62,7 +69,7 @@ namespace Unturned
                     //Reference.Tell(item.networkPlayer, msg);
                     cdUsers++;
                 }
-                Reference.Tell(args.sender.networkPlayer, String.Format("{0} players was frozen.", cdUsers));
+                Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD","FreezesFreezes"), cdUsers));
             }
             else
             {
@@ -85,13 +92,8 @@ namespace Unturned
             {
                 int cdUsers = frozenPlayers.Count;
                 frozenPlayers.Clear();
-                //foreach (BetterNetworkUser item in UserList.users)
-                //{
-                //    frozenPlayers.Remove(item.steamid);
-                //    //Reference.Tell(item.networkPlayer, msg);
-                //    cdUsers++;
-                //}
-                Reference.Tell(args.sender.networkPlayer, String.Format("{0} players was unfrozen.", cdUsers));
+
+                Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "FreezesUnFreezes"), cdUsers));
             }
             else
             {

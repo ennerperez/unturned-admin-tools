@@ -1,6 +1,7 @@
 ﻿using CommandHandler;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Unturned
@@ -66,7 +67,15 @@ namespace Unturned
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(Strings.Get("HLP", "AnnoyingUnlagHelp"));
+            sb.AppendLine(Strings.Get("HLP", "AnnoyingHorn"));
+            sb.AppendLine(Strings.Get("HLP", "AnnoyingVanish"));
+            sb.AppendLine(Strings.Get("HLP", "AnnoyingGod"));
+
+
+            return sb.ToString();
         }
 
         #region Commands

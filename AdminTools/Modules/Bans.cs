@@ -35,9 +35,10 @@ namespace Unturned
         {
             StringBuilder sb = new StringBuilder();
 
-            //sb.AppendLine(Strings.Get("HLP", "AnimalHelp"));
-            //sb.AppendLine(Strings.Get("HLP", "AnimalsKillsHelp"));
-            //sb.AppendLine(Strings.Get("HLP", "AnimalsWildHelp"));
+            sb.AppendLine(Strings.Get("HLP", "BansBanReasonHelp"));
+            sb.AppendLine(Strings.Get("HLP", "BansReloadBansHelp"));
+            sb.AppendLine(Strings.Get("HLP", "BansBansHelp"));
+                        sb.AppendLine(Strings.Get("HLP", "BansUnBansHelp"));
 
             return sb.ToString();
         }
