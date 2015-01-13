@@ -13,7 +13,7 @@ namespace Unturned
         #region TOP: global variables are initialized here
 
         private static int updater3 = 0;
-        internal static List<String> WhitelistedSteamIDs;
+        internal static List<String> WhitelistedSteamIDs = new List<string>();
 
         internal static bool UseWhitelists = false;
         internal static bool KickMessages = true;
@@ -22,36 +22,40 @@ namespace Unturned
 
         #endregion
 
+        internal override void Save()
+        {
+            save();
+            this.Load();
+        }
         internal override void Load()
         {
             if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "Whitelists")))
             {
-                Configs.File.IniWriteValue("Modules", "Whitelists", "false");
-                Configs.File.IniWriteValue("Config", "KickMessages", "true");
+                this.Save();
             }
 
             Whitelists.UseWhitelists = Boolean.Parse(Configs.File.IniReadValue("Modules", "Whitelists"));
             Whitelists.KickMessages = Boolean.Parse(Configs.File.IniReadValue("Config", "KickMessages"));
 
-            if (Whitelists.UseWhitelists)
+            //if (Whitelists.UseWhitelists)
+            //{
+
+            if (!File.Exists(Source)) { Create(); }
+
+            WhitelistedSteamIDs = new List<string>();
+            string[] whitelists = System.IO.File.ReadAllLines(Source);
+            foreach (string item in whitelists)
             {
-
-                if (!File.Exists(Source)) { Create(); }
-
-                WhitelistedSteamIDs = new List<string>();
-                string[] whitelists = System.IO.File.ReadAllLines(Source);
-                foreach (string item in whitelists)
+                try
                 {
-                    try
-                    {
-                        WhitelistedSteamIDs.Add(item);
-                    }
-                    catch (Exception ex)
-                    {
-                        Shared.Log(ex.ToString());
-                    }
+                    WhitelistedSteamIDs.Add(item);
+                }
+                catch (Exception ex)
+                {
+                    Shared.Log(ex.Message);
                 }
             }
+            //}
         }
         internal override void Refresh()
         {
@@ -99,34 +103,36 @@ namespace Unturned
             {
                 case "on":
                     UseWhitelists = true;
+                    save();
                     NetworkChat.sendAlert(Strings.Get("MOD", "WhitelistOn"));
                     break;
 
                 case "off":
                     UseWhitelists = false;
+                    save();
                     NetworkChat.sendAlert(Strings.Get("MOD", "WhitelistOff"));
                     break;
 
-                case "add":
-                    if (UseWhitelists)
-                    {
-                        args.Parameters.RemoveAt(0);
-                        BetterNetworkUser adduser = UserList.getUserFromName(args.ParametersAsString);
+                //case "add":
+                //    //if (UseWhitelists)
+                //    //{
+                //    args.Parameters.RemoveAt(0);
+                //    BetterNetworkUser adduser = UserList.getUserFromName(args.ParametersAsString);
 
-                        if (add(adduser))
-                        {
-                            Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "WhitelistAdded"), adduser.name, adduser.steamid));
-                        }
-                        else
-                        {
-                            Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "WhitelistPlayerNotFound"));
-                        }
-                    }
-                    else
-                    {
-                        Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "WhitelistOff"));
-                    }
-                    break;
+                //    if (add(adduser))
+                //    {
+                //        Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "WhitelistAdded"), adduser.name, adduser.steamid));
+                //    }
+                //    else
+                //    {
+                //        Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "WhitelistPlayerNotFound"));
+                //    }
+                //    //}
+                //    //else
+                //    //{
+                //    //    Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "WhitelistOff"));
+                //    //}
+                //    break;
 
                 case "del":
                     if (UseWhitelists)
@@ -163,6 +169,7 @@ namespace Unturned
             string name = "";
             string steamid = "";
 
+
             try
             {
                 steamid = user.steamid;
@@ -181,12 +188,18 @@ namespace Unturned
 
             }
 
+            foreach (string item in WhitelistedSteamIDs)
+            {
+                if (item == steamid)
+                {
+                    return false;
+                }
+            }
+
             System.IO.StreamWriter file = new StreamWriter(Source, true);
-            file.WriteLine("");
             file.WriteLine(steamid);
             file.Close();
             WhitelistedSteamIDs.Add(steamid);
-
 
             return true;
 
@@ -215,18 +228,27 @@ namespace Unturned
 
             }
 
-            WhitelistedSteamIDs.Remove(steamid);
-
-            File.Delete(Source);
-            System.IO.StreamWriter file = new StreamWriter(Source, true);
-            for (int i = 0; i < WhitelistedSteamIDs.Count; i++)
+            foreach (string item in WhitelistedSteamIDs)
             {
-                file.WriteLine(WhitelistedSteamIDs[i]);
+                if (item == steamid)
+                {
+
+                    WhitelistedSteamIDs.Remove(steamid);
+
+                    File.Delete(Source);
+                    System.IO.StreamWriter file = new StreamWriter(Source, true);
+                    for (int i = 0; i < WhitelistedSteamIDs.Count; i++)
+                    {
+                        file.WriteLine(WhitelistedSteamIDs[i]);
+                    }
+                    file.Close();
+
+                    return true;
+
+                }
             }
-            file.Close();
 
-
-            return true;
+            return false;
 
         }
 
@@ -236,16 +258,31 @@ namespace Unturned
             {
                 foreach (BetterNetworkUser user in UserList.users)
                 {
-                    if (user.networkPlayer != Network.player && !WhitelistedSteamIDs.Contains(user.steamid))
+                    if (user.networkPlayer != Network.player) // && !WhitelistedSteamIDs.Contains(user.steamid))
                     {
-                        if (KickMessages)
+
+                        bool iswhitelisted = false;
+
+                        foreach (string item in WhitelistedSteamIDs)
                         {
-                            Kicks.kick(user.name, Strings.Get("MOD","WhitelistNotWhitelisted"));
+                            if (user.steamid == item)
+                            {
+                                iswhitelisted = true;
+                                break;
+                            }
                         }
-                        else
+
+                        if (!iswhitelisted)
                         {
-                            NetworkChat.sendNotification(user.networkPlayer, Strings.Get("MOD", "WhitelistNotWhitelisted"));
-                            Network.CloseConnection(user.networkPlayer, true);
+                            if (KickMessages)
+                            {
+                                Kicks.kick(user.name, Strings.Get("MOD", "WhitelistNotWhitelisted"));
+                            }
+                            else
+                            {
+                                NetworkChat.sendNotification(user.networkPlayer, Strings.Get("MOD", "WhitelistNotWhitelisted"));
+                                Network.CloseConnection(user.networkPlayer, true);
+                            }
                         }
 
                     }
@@ -254,6 +291,22 @@ namespace Unturned
             }
             updater3--;
         }
+
+        private static void save()
+        {
+            Configs.File.IniWriteValue("Modules", "Whitelists", (UseWhitelists) ? "true" : "false");
+            Configs.File.IniWriteValue("Config", "KickMessages", (KickMessages) ? "true" : "false");
+            //foreach (Module item in AdminTools.Modules)
+            //{
+            //    if (typeof(Item) == typeof(Whitelists))
+            //    {
+            //        item.Save();
+            //        item.Load();
+            //        break;
+            //    }
+            //}
+        }
+
 
     }
 }

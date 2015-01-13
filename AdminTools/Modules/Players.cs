@@ -66,14 +66,14 @@ namespace Unturned
             {
                 if (String.IsNullOrEmpty(naam.Trim())) { naam = args.sender.player.name; }
                 BetterNetworkUser user = UserList.getUserFromName(naam);
-                respawns = respawn(user, true, msg, null);
+                respawns = respawn(user, false, msg, null);
             }
 
             if (respawns == 0)
             {
                 Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "PlayerNotFound"));
             }
-            else
+            else if (respawns >= 1 && (naam.Trim().ToLower() != "all") && (naam.Trim().ToLower() != "others"))
             {
                 NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "PlayersRespawn"), args.sender.name, respawns));
             }
@@ -81,16 +81,26 @@ namespace Unturned
         }
         internal static void Skill(CommandArgs args)
         {
-            String naam = args.ParametersAsString;
+            
             String msg = Strings.Get("MOD", "PlayerSkillDefault");
             int amount = 10000;
 
-            string[] ns = args.ParametersAsString.Split(' ');
-            if (ns.Length > 1) { amount = int.Parse(ns[ns.Length]); }
-            if (amount <= 0) { return; }
+            if (args.Parameters.Count > 0)
+            {
+                try
+                {
+                    amount = int.Parse(args.Parameters[args.Parameters.Count - 1].ToString());
+                    args.Parameters.RemoveAt(args.Parameters.Count - 1);
+                }
+                catch { }
+            }
+
+            if (amount > 10000 || amount <= 0) { amount = 10000; }
+                                    
+            String naam = args.ParametersAsString.Trim();
 
             int skills = 0;
-
+                        
             if (naam.Trim().ToLower() == "all")
             {
                 skills = skill(null, amount, true, msg);
@@ -103,7 +113,7 @@ namespace Unturned
             {
                 if (String.IsNullOrEmpty(naam.Trim())) { naam = args.sender.player.name; }
                 BetterNetworkUser user = UserList.getUserFromName(naam);
-                skills = skill(user, amount, true, msg, null);
+                skills = skill(user, amount, false, msg, null);
             }
 
 
@@ -111,11 +121,11 @@ namespace Unturned
             {
                 Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "PlayerNotFound"));
             }
-            else if (skills == 1)
+            else if (skills == 1 && (naam.Trim().ToLower() != "all") && (naam.Trim().ToLower() != "others"))
             {
                 Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "PlayerSkilled"), naam));
             }
-            else if (skills > 1)
+            else if (skills >= 1)
             {
                 NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "PlayersBlessed"), skills, amount));
             }
@@ -141,7 +151,7 @@ namespace Unturned
             {
                 if (String.IsNullOrEmpty(naam.Trim())) { naam = args.sender.player.name; }
                 BetterNetworkUser user = UserList.getUserFromName(naam);
-                kills = kill(user, true, msg, null);
+                kills = kill(user, false, msg, null);
             }
 
 
@@ -149,7 +159,7 @@ namespace Unturned
             {
                 Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "PlayerNotFound"));
             }
-            else if (kills == 1)
+            else if (kills == 1 && (naam.Trim().ToLower() != "all") && (naam.Trim().ToLower() != "others"))
             {
                 Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "PlayerKilled"), naam));
             }
@@ -183,7 +193,7 @@ namespace Unturned
             {
                 if (String.IsNullOrEmpty(naam.Trim())) { naam = args.sender.player.name; }
                 BetterNetworkUser user = UserList.getUserFromName(naam);
-                heals = heal(user, true, msg, null);
+                heals = heal(user, false, msg, null);
             }
 
 
@@ -191,11 +201,11 @@ namespace Unturned
             {
                 Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "PlayerNotFound"));
             }
-            else if (heals == 1)
+            else if (heals == 1&& (naam.Trim().ToLower() != "all") && (naam.Trim().ToLower() != "others"))
             {
                 Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "PlayerHealed"), naam));
             }
-            else if (heals > 1)
+            else if (heals >= 1)
             {
                 NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "PlayersMiracle"), heals));
             }
@@ -321,20 +331,20 @@ namespace Unturned
                 if (all)
                 {
                     int counter = 0;
-                    foreach (BetterNetworkUser User in mapUsers)
+                    foreach (BetterNetworkUser item in mapUsers)
                     {
                         if ((exUsers != null) && exUsers.Count > 0)
                         {
-                            if (!exUsers.Contains(User))
+                            if (!exUsers.Contains(item))
                             {
-                                User.player.GetComponent<Skills>().learn(amount);
+                                item.player.GetComponent<Skills>().learn(amount);
                                 counter++;
                             }
 
                         }
                         else
                         {
-                            User.player.GetComponent<Skills>().learn(amount);
+                            item.player.GetComponent<Skills>().learn(amount);
                             counter++;
                         }
 
@@ -476,7 +486,7 @@ namespace Unturned
         private static int promote(BetterNetworkUser user)
         {
             int permission = UserList.getPermission(user.steamid);
-            if (permission < PermissionLevel.Owner.ToInt())
+            if (permission < 10) //PermissionLevel.Owner.ToInt())
             {
                 File.IniWriteValue("PermissionLevels", user.steamid, (permission + 1).ToString());
                 return (permission + 1);
@@ -486,7 +496,7 @@ namespace Unturned
         private static int demote(BetterNetworkUser user)
         {
             int permission = UserList.getPermission(user.steamid);
-            if (permission > PermissionLevel.All.ToInt())
+            if (permission > 0) // PermissionLevel.All.ToInt())
             {
                 File.IniWriteValue("PermissionLevels", user.steamid, (permission - 1).ToString());
                 return (permission - 1);

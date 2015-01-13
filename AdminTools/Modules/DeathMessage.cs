@@ -19,12 +19,16 @@ namespace Unturned
 
         #endregion
 
+        internal override void Save()
+        {
+            Configs.File.IniWriteValue("Modules", "DeathMessages", (UseDeathMessage) ? "true" : "false");
+        }
         internal override void Load()
         {
 
             if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "DeathMessages")))
             {
-                Configs.File.IniWriteValue("Modules", "DeathMessages", "true");
+                this.Save();
             }
 
             DeathMessages.UseDeathMessage = Boolean.Parse(Configs.File.IniReadValue("Modules", "DeathMessages"));

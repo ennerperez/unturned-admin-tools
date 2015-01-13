@@ -13,7 +13,7 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
-        internal static List<Location> MapLocations;
+        internal static List<Location> MapLocations = new List<Location>();
         internal static bool UseLocations = false;
 
         private static string fileSource = System.IO.Path.Combine(AdminTools.AdminPath, "locations.txt");
@@ -24,7 +24,7 @@ namespace Unturned
         {
             if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "Locations")))
             {
-                Configs.File.IniWriteValue("Modules", "Locations", "false");
+                this.Save();
             }
 
             Locations.UseLocations = Boolean.Parse(Configs.File.IniReadValue("Modules", "Locations"));
@@ -83,6 +83,9 @@ namespace Unturned
         }
         internal override void Save()
         {
+
+            Configs.File.IniWriteValue("Modules", "Locations", (UseLocations) ? "true" : "false");
+
             File.Delete(fileSource);
 
             System.IO.StreamWriter file = new StreamWriter(fileSource, true);
@@ -109,7 +112,7 @@ namespace Unturned
             _return.Add(new Command(PermissionLevel.Admin.ToInt(), GetExternal, "at", "@")); 
             // ---> Dev's commands
             _return.Add(new Command(PermissionLevel.All.ToInt(), Get, "position", "p"));
-            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Set, "saveloc", "sloc")); 
+            //_return.Add(new Command(PermissionLevel.Admin.ToInt(), Set, "saveloc", "sloc")); 
             return _return;
         }
         internal override String GetHelp()
@@ -130,44 +133,51 @@ namespace Unturned
         internal static void Get(CommandArgs args)
         {
             Vector3 _point = args.sender.position;
-            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "LocationsGet"), _point.x.ToString(), _point.y.ToString(), _point.z.ToString()));
-        }
-        internal static void Set(CommandArgs args)
-        {
-            Vector2 _point = new Vector2(args.sender.position.x, args.sender.position.z);
-            string locName = args.Parameters[0];
-            float rad = 100;
-            if (args.Parameters.Count > 1)
+            if (Configs.Developer)
             {
-                rad = float.Parse(args.Parameters[1]);
-            }
-
-            if (rad == -1)
-            {
-                List<Location> toremove = new List<Location>();
-                foreach (Location item in MapLocations)
-                {
-                    if (item.Name == locName)
-                    {
-                        toremove.Add(item);
-                    }
-                }
-                foreach (Location item in toremove)
-                {
-                    MapLocations.Remove(item);
-                }
-
+                NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "LocationsGet"), _point.x.ToString(), _point.y.ToString(), _point.z.ToString()));
             }
             else
             {
-                MapLocations.Add(new Location() { Name = locName, Point = _point, Radius = rad });
-                if (Configs.Developer) { Get(args); }
+                Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "LocationsGet"), _point.x.ToString(), _point.y.ToString(), _point.z.ToString()));
             }
-
-            AdminTools.Modules.OfType<Locations>().First().Save();
-            Reference.Tell(args.sender.networkPlayer, (Strings.Get("MOD","LocationsLocationSave")));
-
         }
+        //internal static void Set(CommandArgs args)
+        //{
+        //    Vector2 _point = new Vector2(args.sender.position.x, args.sender.position.z);
+        //    string locName = args.Parameters[0];
+        //    float rad = 100;
+        //    if (args.Parameters.Count > 1)
+        //    {
+        //        rad = float.Parse(args.Parameters[1]);
+        //    }
+
+        //    if (rad == -1)
+        //    {
+        //        List<Location> toremove = new List<Location>();
+        //        foreach (Location item in MapLocations)
+        //        {
+        //            if (item.Name == locName)
+        //            {
+        //                toremove.Add(item);
+        //            }
+        //        }
+        //        foreach (Location item in toremove)
+        //        {
+        //            MapLocations.Remove(item);
+        //        }
+
+        //    }
+        //    else
+        //    {
+        //        MapLocations.Add(new Location() { Name = locName, Point = _point, Radius = rad });
+        //        if (Configs.Developer) { Get(args); }
+        //    }
+
+        //    AdminTools.Modules.OfType<Locations>().First().Save();
+        //    Reference.Tell(args.sender.networkPlayer, (Strings.Get("MOD","LocationsLocationSave")));
+
+        //}
 
         internal static void GetPublic(CommandArgs args)
         {
@@ -203,7 +213,7 @@ namespace Unturned
             }
 
 
-            Vector2 _point = new Vector2(args.sender.position.x, args.sender.position.z);
+            Vector2 _point = new Vector2(user.position.x, user.position.z);
 
             foreach (Location item in MapLocations)
             {
@@ -213,13 +223,13 @@ namespace Unturned
                     switch (mode)
                     {
                         case 1:
-                            Reference.Tell(args.sender.networkPlayer, String.Format("You are at {0} right now.", item.Name));
+                            Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "LocationsGetWhere"), item.Name));
                             break;
                         case 2:
-                            Reference.Tell(args.sender.networkPlayer, String.Format("{0} are at {1} right now.", user.name, item.Name));
+                            Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "LocationsGetHere"), user.name, item.Name));
                             break;
                         default:
-                            NetworkChat.sendAlert(String.Format("{0} are at {1} right now.", args.sender.name, item.Name));
+                            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "LocationsGetAt"), args.sender.name, item.Name));
                             break;
                     }
 
@@ -227,7 +237,7 @@ namespace Unturned
                 }
             }
 
-            Reference.Tell(args.sender.networkPlayer, "You are lost, naked and you will be raped.");
+            Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "LocationsGetNowhere"));
             if (Configs.Developer)
             {
                 Inventory inventory = args.sender.player.gameObject.GetComponent<Inventory>();

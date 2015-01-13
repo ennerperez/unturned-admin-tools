@@ -52,6 +52,11 @@ namespace Unturned
             Configs.File.IniWriteValue("Config", "Developer", (Configs.Developer) ? "true" : "false");
             Configs.File.IniWriteValue("Config", "Logging", (Configs.Logging) ? "true" : "false");
             
+            foreach (Module item in AdminTools.Modules)
+            {
+                item.Save();
+            }
+
             Configs.File.IniWriteValue("Security", "Console", (Configs.Console) ? "true" : "false");
             Configs.File.IniWriteValue("Security", "Password", Shared.RandomString(8));
             Configs.File.IniWriteValue("Security", "Confirmation", (Configs.Confirmation) ? "true" : "false");

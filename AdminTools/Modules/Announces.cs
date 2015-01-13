@@ -17,18 +17,22 @@ namespace Unturned
 
         internal static bool UseAnnounces = false;
 
-        internal static Stack<String> Messages;
+        internal static Stack<String> Messages = new Stack<String>();
 
-        private static string fileSource = System.IO.Path.Combine(AdminTools.AdminPath, "announces.txt");
+        private static string Source = System.IO.Path.Combine(AdminTools.AdminPath, "announces.txt");
 
         #endregion
 
+        internal override void Save()
+        {
+            Configs.File.IniWriteValue("Modules", "Announces", (UseAnnounces) ? "true" : "false");
+            Configs.File.IniWriteValue("Timers", "Announces", Interval.ToString());
+        }
         internal override void Load()
         {
             if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "Announces")))
             {
-                Configs.File.IniWriteValue("Modules", "Announces", "true");
-                Configs.File.IniWriteValue("Timers", "Announces", "600");
+                this.Save();
             }
 
             Announces.UseAnnounces = Boolean.Parse(Configs.File.IniReadValue("Modules", "Announces"));
@@ -44,9 +48,9 @@ namespace Unturned
                     Timer = null;
                 }
 
-                if (!File.Exists(fileSource)) { Create(); }
+                if (!File.Exists(Source)) { Create(); }
 
-                string[] announces = System.IO.File.ReadAllLines(fileSource);
+                string[] announces = System.IO.File.ReadAllLines(Source);
                 Messages = new Stack<string>(announces);
 
                 if (Messages.Count > 0)
@@ -64,7 +68,7 @@ namespace Unturned
         }
         internal override void Create()
         {
-            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            System.IO.StreamWriter file = new StreamWriter(Source, true);
             file.WriteLine("This line will be announced 10 minutes after injecting (or whatever you change the interval to)");
             file.WriteLine("This line will be announced at the same time");
             file.WriteLine(":");

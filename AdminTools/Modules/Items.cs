@@ -19,13 +19,17 @@ namespace Unturned
 
         #endregion
 
+        internal override void Save()
+        {
+            Configs.File.IniWriteValue("Modules", "RespawnItems", (UseRespawnItems) ? "true" : "false");
+            Configs.File.IniWriteValue("Timers", "RespawnItems", Interval.ToString());
+        }
         internal override void Load()
         {
 
             if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "RespawnItems")))
             {
-                Configs.File.IniWriteValue("Modules", "RespawnItems", "true");
-                Configs.File.IniWriteValue("Timers", "RespawnItems", "2700");
+                this.Save();
             }
 
             Items.UseRespawnItems = Boolean.Parse(Configs.File.IniReadValue("Modules", "RespawnItems"));

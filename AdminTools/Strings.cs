@@ -82,59 +82,59 @@ namespace Unturned
             Strings.File.IniWriteValue("HLP", "BansBansHelp", "[ban] -> Ban a player.");
             Strings.File.IniWriteValue("HLP", "BansUnBansHelp", "[unban,uban] -> Unban a player.");
 
-            Strings.File.IniWriteValue("MOD", "BasicsOnlinePlayers", "There are {0} players online.");
+            Strings.File.IniWriteValue("MOD", "BasicsOnlinePlayers", "There are {0} players on-line.");
             Strings.File.IniWriteValue("MOD", "BasicsRealTime", "The time is {0}");
             Strings.File.IniWriteValue("MOD", "BasicsRealTime", "The real time is {0}");
             Strings.File.IniWriteValue("HLP", "BasicsClearChat", "[clear,cls] -> clear chat.");
-            Strings.File.IniWriteValue("HLP", "BasicsOnlinePlayerHelp", "[online,players,who] -> Show a list of online players.");
+            Strings.File.IniWriteValue("HLP", "BasicsOnlinePlayerHelp", "[online,players,who] -> Show a list of on-line players.");
             Strings.File.IniWriteValue("HLP", "BasicsGameTimeHelp", "[time] -> Display the game time.");
-            Strings.File.IniWriteValue("HLP", "BasicsRealTimeHelp", "[now] -> Display the realworld time.");
+            Strings.File.IniWriteValue("HLP", "BasicsRealTimeHelp", "[now] -> Display the real world time.");
             Strings.File.IniWriteValue("HLP", "BasicsRestartHelp", "[restart] -> Restart the server.");
             Strings.File.IniWriteValue("HLP", "BasicsAboutHelp", "[about] -> About.");
 
             Strings.File.IniWriteValue("MOD", "FreezesFreezes", "{0} players was frozen.");
             Strings.File.IniWriteValue("MOD", "FreezesUnFreezes", "{0} players was unfrozen.");
-            Strings.File.IniWriteValue("HLP", "FreezeFreezeHelp", "[freeze,pf] -> Freeze all players online."); 
-            Strings.File.IniWriteValue("HLP", "FreezeUnFreezeHelp", "[unfreeze,puf] -> Unfreeze all players online."); 
+            Strings.File.IniWriteValue("HLP", "FreezeFreezeHelp", "[freeze,pf] -> Freeze all players on-line."); 
+            Strings.File.IniWriteValue("HLP", "FreezeUnFreezeHelp", "[unfreeze,puf] -> Unfreeze all players on-line."); 
 
             Strings.File.IniWriteValue("HLP", "HomesSetHomesHelp", "[sethome,sh] -> Set a home.");
             Strings.File.IniWriteValue("HLP", "HomesHomeHelp", "[home, h] -> Teleport you to your home.");
 
             Strings.File.IniWriteValue("MOD", "ItemsReset", "{0} has respawned all items.");
             Strings.File.IniWriteValue("HLP", "ItemsSpawn", "[spawn,i,get] -> Spawn a item by id.");
-            Strings.File.IniWriteValue("HLP", "ItemsSpawn", "[resetitems,ir] -> Respawn and reset all items on server.");
+            Strings.File.IniWriteValue("HLP", "ItemsSpawn", "[resetitems,ir] -> Re-spawn and reset all items on server.");
             Strings.File.IniWriteValue("HLP", "ItemsDelay", "[setitemsdelay] -> Change the delay on spawn items.");
 
             Strings.File.IniWriteValue("HLP", "KicksKick", "[kick, k] -> Kick a player.");
 
             Strings.File.IniWriteValue("MOD", "KitsUserKits", "You can use those kits: {0}. Use /kit <name>");
-            Strings.File.IniWriteValue("MOD", "KitsNotSet", "You don't have kits yet");
+            Strings.File.IniWriteValue("MOD", "KitsNotSet", "You don't have kits yet.");
+            Strings.File.IniWriteValue("MOD", "KitsNotFound", "Kit was not found.");
             Strings.File.IniWriteValue("MOD", "KitsSet", "Kit '{0}' was set.");
-            Strings.File.IniWriteValue("MOD", "KitsDelete", "Kit '{0}' was deleted."); //agregar comando /kitdel
+            Strings.File.IniWriteValue("MOD", "KitsDelete", "Kit '{0}' was deleted."); 
             Strings.File.IniWriteValue("MOD", "KitsAdd", "'{0}' was added to kit '{1}'.");
-            Strings.File.IniWriteValue("HLP", "KitsList", "[getkits, ks, kits] -> Display a list of created kits."); //no muestra la lista
-            Strings.File.IniWriteValue("HLP", "KitsGet", "[kit,k] -> Give you the desiree kit."); //al usar solo "/kit" spawnea repetidas veces los items
-            Strings.File.IniWriteValue("HLP", "KitsAdd", "[addkit,ka] -> Add items to a coustom kit.");
-            Strings.File.IniWriteValue("HLP", "KitsSet", "[setkit,ks] -> Set a coustom kit.");
+            Strings.File.IniWriteValue("HLP", "KitsList", "[getkits, ks, kits] -> Display a list of created kits."); 
+            Strings.File.IniWriteValue("HLP", "KitsGet", "[kit,k] -> Give you the desire kit."); 
+            Strings.File.IniWriteValue("HLP", "KitsAdd", "[addkit,ka] -> Add items to a custom kit.");
+            Strings.File.IniWriteValue("HLP", "KitsSet", "[setkit,ks] -> Set a custom kit.");
 
             Strings.File.IniWriteValue("MOD", "LocationsGet", "X:{0}, Y:{1}, Z:{2}");
             Strings.File.IniWriteValue("MOD", "LocationsLocationSave", "Locations saved.");
+            Strings.File.IniWriteValue("MOD", "LocationsGetWhere", "You are at {0} right now.");
+            Strings.File.IniWriteValue("MOD", "LocationsGetHere", "{0} are at {1} right now.");
+            Strings.File.IniWriteValue("MOD", "LocationsGetAt", "{0} are at {1} right now.");
+            Strings.File.IniWriteValue("MOD", "LocationsGetNowhere", "You are lost, naked and you will be raped.");
+            
             Strings.File.IniWriteValue("HLP", "LocationsGetPublic", "[here,h] -> Tells to everyone the right place where you are.");
             Strings.File.IniWriteValue("HLP", "LocationsGetPrivate", "[where,w] -> Tells to you the location that you are");
             Strings.File.IniWriteValue("HLP", "LocationsGetGetExternal", "[at,@] -> Tell you the position and location of a player"); //mala referencia
             // ----> Dev's Commands Be careful with /saveloc /sloc
             Strings.File.IniWriteValue("HLP", "LocationsGet", "[position,p] -> Give the X Y Z");
             Strings.File.IniWriteValue("HLP", "LocationsSet", "[saveloc,sloc] -> Save the location in the config file");
-
-
-
-
-
-
-
+                        
             Strings.File.IniWriteValue("MOD", "PlayerNotFound", "Player was not found.");
             Strings.File.IniWriteValue("MOD", "PlayerRespawnDefault", "You has been re-spawned.");
-            Strings.File.IniWriteValue("MOD", "PlayersRespawn", "{0} has re-spawned {0} payers.");
+            Strings.File.IniWriteValue("MOD", "PlayersRespawn", "{0} has re-spawned {1} payers.");
             Strings.File.IniWriteValue("MOD", "PlayerSkillDefault", "You has been blessed, you learned {0} skill points.");
             Strings.File.IniWriteValue("MOD", "PlayerSkilled", "You skilled {0}.");
             Strings.File.IniWriteValue("MOD", "PlayersBlessed", "Players has been blessed, {0} players was learned {1} skill points.");
@@ -149,10 +149,10 @@ namespace Unturned
             Strings.File.IniWriteValue("MOD", "PlayerDemoted", "You have been demoted to level {0}.");
             Strings.File.IniWriteValue("MOD", "PlayersPromote", "{0} has been promoted to level {1}");
             Strings.File.IniWriteValue("MOD", "PlayersDemote", "{0} has been demoted to level {1}");
-            Strings.File.IniWriteValue("HLP", "PlayersRespawnHelp", "[respawn,pr] <[playername,all,others]> -> Re-spawn specific player, all or only others."); //Bug de comando
-            Strings.File.IniWriteValue("HLP", "PlayersSkillHelp", "[skill,ps] <[playername,all,others]> <[amount]> -> Learn experience points to specific player, all or only others."); //Bug de comando
+            Strings.File.IniWriteValue("HLP", "PlayersRespawnHelp", "[respawn,pr] <[playername,all,others]> -> Re-spawn specific player, all or only others.");
+            Strings.File.IniWriteValue("HLP", "PlayersSkillHelp", "[skill,ps] <[playername,all,others]> <[amount]> -> Learn experience points to specific player, all or only others.");
             Strings.File.IniWriteValue("HLP", "PlayersKillHelp", "[kill,pk] <[playername,all,others]> -> Kill specific player, all or only others.");
-            Strings.File.IniWriteValue("HLP", "PlayersHealHelp", "[heal,ph] <[playername,all,others]> -> Heal specific player, all or only others."); //Bug de comando
+            Strings.File.IniWriteValue("HLP", "PlayersHealHelp", "[heal,ph] <[playername,all,others]> -> Heal specific player, all or only others.");
             Strings.File.IniWriteValue("HLP", "PlayersPromoteHelp","[promote] <playername> -> Promote player level.");
             Strings.File.IniWriteValue("HLP", "PlayersDemoteHelp", "[demote] <playername> -> Demote player level.");
 
@@ -177,7 +177,7 @@ namespace Unturned
             Strings.File.IniWriteValue("HLP", "VehiclesRepair", "[repairvehicles,vr,repair] -> Repair vehicles.");
             Strings.File.IniWriteValue("HLP", "VehiclesRefuel", "[refuelvehicles,vf,refuel] -> Refuel vehicles.");
             Strings.File.IniWriteValue("HLP", "VehiclesDestroy", "[destroyvehicles,vd] -> Destroy vehicles.");
-            Strings.File.IniWriteValue("HLP", "VehiclesSirens", "[sirens] <[on,off]> -> Turn on/off vehicles sirens."); //no sirve
+            Strings.File.IniWriteValue("HLP", "VehiclesSirens", "[sirens] <[on,off]> -> Turn on/off vehicles sirens."); 
                         
             Strings.File.IniWriteValue("MOD", "WhitelistOn", "Whitelist enabled.");
             Strings.File.IniWriteValue("MOD", "WhitelistOff", "Whitelist disabled.");

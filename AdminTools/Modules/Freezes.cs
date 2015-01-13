@@ -11,16 +11,16 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
-        internal static Dictionary<String, Vector3> frozenPlayers = new Dictionary<String, Vector3>();
+        internal static Dictionary<String, Vector3> FrozenPlayers = new Dictionary<String, Vector3>();
 
         #endregion
 
         internal override void Refresh()
         {
 
-            if (Freezes.frozenPlayers.Count > 0)
+            if (Freezes.FrozenPlayers.Count > 0)
             {
-                foreach (KeyValuePair<String, Vector3> entry in Freezes.frozenPlayers)
+                foreach (KeyValuePair<String, Vector3> entry in Freezes.FrozenPlayers)
                 {
                     BetterNetworkUser user = UserList.getUserFromSteamID(entry.Key);
                     if (user != null)
@@ -65,7 +65,7 @@ namespace Unturned
                 foreach (BetterNetworkUser item in UserList.users)
                 {
                     Player player = item.player;
-                    frozenPlayers.Add(item.steamid, player.transform.position);
+                    FrozenPlayers.Add(item.steamid, player.transform.position);
                     //Reference.Tell(item.networkPlayer, msg);
                     cdUsers++;
                 }
@@ -77,7 +77,7 @@ namespace Unturned
                 if (user != null)
                 {
                     Player player = user.player;
-                    frozenPlayers.Add(user.steamid, player.transform.position);
+                    FrozenPlayers.Add(user.steamid, player.transform.position);
                 }
                 Reference.Tell(args.sender.networkPlayer, String.Format("Froze the player {0}.", user.name));
 
@@ -90,8 +90,8 @@ namespace Unturned
 
             if (naam.ToLower() == "all")
             {
-                int cdUsers = frozenPlayers.Count;
-                frozenPlayers.Clear();
+                int cdUsers = FrozenPlayers.Count;
+                FrozenPlayers.Clear();
 
                 Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "FreezesUnFreezes"), cdUsers));
             }
@@ -100,7 +100,7 @@ namespace Unturned
                 BetterNetworkUser user = UserList.getUserFromName(naam);
                 if (user != null)
                 {
-                    frozenPlayers.Remove(user.steamid);
+                    FrozenPlayers.Remove(user.steamid);
                 }
                 Reference.Tell(args.sender.networkPlayer, String.Format("Unfroze the player {0}.", user.name));
             }

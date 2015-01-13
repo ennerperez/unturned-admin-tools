@@ -53,6 +53,7 @@ namespace Unturned
             }
 
             CommandList.add(PermissionLevel.All.ToInt(), PrintHelp, "help", "?");
+            Configs.GetCommands();
 
             Shared.Log(Strings.Get("LOG", "ServerStarted") + " " + String.Format(Strings.Get("GUI", "LoadedModules"), LoadedModules));
 

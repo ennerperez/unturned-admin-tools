@@ -13,10 +13,10 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
-        internal static Dictionary<String, Dictionary<string, int[]>> PlayerKits;
+        internal static Dictionary<String, Dictionary<string, int[]>> PlayerKits = new Dictionary<String, Dictionary<string, int[]>>();
         internal static bool UsePlayerKits = false;
 
-        private static string fileSource = System.IO.Path.Combine(AdminTools.AdminPath, "kits.txt");
+        private static string Source = System.IO.Path.Combine(AdminTools.AdminPath, "kits.txt");
 
         #endregion
 
@@ -25,7 +25,7 @@ namespace Unturned
 
             if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "Kits")))
             {
-                Configs.File.IniWriteValue("Modules", "Kits", "false");
+                this.Save();
             }
 
             Kits.UsePlayerKits = Boolean.Parse(Configs.File.IniReadValue("Modules", "Kits"));
@@ -33,10 +33,10 @@ namespace Unturned
             if (Kits.UsePlayerKits)
             {
 
-                if (!File.Exists(fileSource)) { Create(); }
+                if (!File.Exists(Source)) { Create(); }
 
                 PlayerKits = new Dictionary<String, Dictionary<string, int[]>>();
-                string[] kits = System.IO.File.ReadAllLines(fileSource);
+                string[] kits = System.IO.File.ReadAllLines(Source);
                 foreach (string item in kits)
                 {
                     try
@@ -66,15 +66,18 @@ namespace Unturned
         }
         internal override void Create()
         {
-            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            System.IO.StreamWriter file = new StreamWriter(Source, true);
             file.Close();
         }
         internal override void Save()
         {
-            string[] lines = System.IO.File.ReadAllLines(fileSource);
-            File.Delete(fileSource);
 
-            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            Configs.File.IniWriteValue("Modules", "Kits", (UsePlayerKits) ? "true" : "false");
+
+            string[] lines = System.IO.File.ReadAllLines(Source);
+            File.Delete(Source);
+
+            System.IO.StreamWriter file = new StreamWriter(Source, true);
             foreach (KeyValuePair<String, Dictionary<string, int[]>> item in PlayerKits)
             {
                 string steamID = item.Key;
@@ -104,9 +107,9 @@ namespace Unturned
         {
             List<Command> _return = new List<Command>();
             _return.Add(new Command(PermissionLevel.Owner.ToInt(), List, "getkits", "ks", "kits"));
-            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Get, "kit", "k")); 
-            _return.Add(new Command(PermissionLevel.Admin.ToInt(), AddTo, "addkit", "ka")); 
-            _return.Add(new Command(PermissionLevel.Owner.ToInt(), Set, "setkit", "ks")); 
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Get, "kit", "k"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), AddTo, "addkit", "ka"));
+            _return.Add(new Command(PermissionLevel.Owner.ToInt(), Set, "setkit", "ks"));
             return _return;
         }
         internal override String GetHelp()
@@ -121,7 +124,7 @@ namespace Unturned
 
             return sb.ToString();
         }
-        
+
         #region Commands
 
         internal static void List(CommandArgs args)
@@ -131,15 +134,22 @@ namespace Unturned
                 string userKits = "";
                 List<string> userKitsList = new List<string>();
 
-                foreach (KeyValuePair<string, int[]> item in PlayerKits[args.sender.steamid])
+                if (PlayerKits.ContainsKey(args.sender.steamid))
                 {
-                    userKitsList.Add(item.Key);
-                }
+                    foreach (KeyValuePair<string, int[]> item in PlayerKits[args.sender.steamid])
+                    {
+                        userKitsList.Add(item.Key);
+                    }
 
-                if (userKitsList.Count > 0)
-                {
-                    userKits = string.Join(", ", userKitsList.ToArray());
-                    Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "KitsUserKits"), userKits));
+                    if (userKitsList.Count > 0)
+                    {
+                        userKits = string.Join(", ", userKitsList.ToArray());
+                        Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "KitsUserKits"), userKits));
+                    }
+                    else
+                    {
+                        Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "KitsNotSet"));
+                    }
                 }
                 else
                 {
@@ -160,7 +170,7 @@ namespace Unturned
                 set(args.sender.steamid, kitname, itemsID.ToArray());
                 if (itemsID.Count > 0)
                 {
-                    Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD","KitsSet"), kitname));
+                    Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "KitsSet"), kitname));
                 }
                 else
                 {
@@ -177,7 +187,7 @@ namespace Unturned
                 int itemid = int.Parse(args.Parameters[1]);
                 addTo(args.sender.steamid, kitname, itemid);
 
-                Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD","KitsAdd"), ItemName.getName(itemid), kitname));
+                Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "KitsAdd"), ItemName.getName(itemid), kitname));
 
             }
         }
@@ -192,9 +202,13 @@ namespace Unturned
                     string kitname = args.Parameters[0];
                     string[] key = { args.sender.steamid, kitname };
 
-                    if (PlayerKits[args.sender.steamid].ContainsKey(kitname))
+                    if (PlayerKits.ContainsKey(args.sender.steamid))
                     {
-                        itemids = PlayerKits[args.sender.steamid][kitname];
+                        if (PlayerKits[args.sender.steamid].ContainsKey(kitname))
+                        {
+                            itemids = PlayerKits[args.sender.steamid][kitname];
+                        }
+
                     }
                 }
             }
@@ -220,14 +234,15 @@ namespace Unturned
                     {
                         if (item > maxitem) { maxitem = item; }
                     }
-
-                    if (maxitem > 0)
-                    {
-                        cloth.changeBackpack(maxitem);
-                        cloth.saveAllClothing();
-                    }
                 }
 
+                if (maxitem > 0)
+                {
+                    cloth.changeBackpack(maxitem);
+                    cloth.saveAllClothing();
+                    sortItems.Remove(maxitem);
+                }
+                
                 foreach (int item in sortItems)
                 {
                     if (item < 2000 || item > 2006)
@@ -242,7 +257,7 @@ namespace Unturned
             }
             else
             {
-                Reference.Tell(args.sender.networkPlayer, "Kit was not found.");
+                Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "KitsNotFound"));
             }
 
         }
@@ -270,7 +285,7 @@ namespace Unturned
             itemids.Add(itemID);
             PlayerKits[steamID][kitname] = itemids.ToArray();
 
-            AdminTools.Modules.OfType<Kits>().First().Save();           
+            AdminTools.Modules.OfType<Kits>().First().Save();
 
         }
         private static void set(string steamID, string kitname, int[] itemsID)
@@ -288,7 +303,7 @@ namespace Unturned
                 PlayerKits[steamID].Remove(kitname);
             }
 
-            AdminTools.Modules.OfType<Kits>().First().Save();           
+            AdminTools.Modules.OfType<Kits>().First().Save();
 
         }
 

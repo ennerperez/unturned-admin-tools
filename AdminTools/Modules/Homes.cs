@@ -12,19 +12,23 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
-        internal static Dictionary<String, Vector3> PlayerHomes;
+        internal static Dictionary<String, Vector3> PlayerHomes = new Dictionary<String, Vector3>();
         internal static bool UsePlayerHomes = false;
 
-        private static string fileSource = System.IO.Path.Combine(AdminTools.AdminPath, "homes.txt");
+        private static string Source = System.IO.Path.Combine(AdminTools.AdminPath, "homes.txt");
 
         #endregion
 
+        internal override void Save()
+        {
+            Configs.File.IniWriteValue("Modules", "Homes", (UsePlayerHomes) ? "true" : "false");
+        }
         internal override void Load()
         {
 
             if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "Homes")))
             {
-                Configs.File.IniWriteValue("Modules", "Homes", "false");
+                this.Save();
             }
 
             Homes.UsePlayerHomes = Boolean.Parse(Configs.File.IniReadValue("Modules", "Homes"));
@@ -32,10 +36,10 @@ namespace Unturned
             if (Homes.UsePlayerHomes)
             {
 
-                if (!File.Exists(fileSource)) { Create(); }
+                if (!File.Exists(Source)) { Create(); }
 
                 PlayerHomes = new Dictionary<String, Vector3>();
-                string[] homes = System.IO.File.ReadAllLines(fileSource);
+                string[] homes = System.IO.File.ReadAllLines(Source);
                 foreach (string item in homes)
                 {
                     try
@@ -60,7 +64,7 @@ namespace Unturned
         }
         internal override void Create()
         {
-            System.IO.StreamWriter file = new StreamWriter(fileSource, true);
+            System.IO.StreamWriter file = new StreamWriter(Source, true);
             file.Close();
         }
         internal override void Clear()

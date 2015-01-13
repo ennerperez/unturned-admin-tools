@@ -18,11 +18,15 @@ namespace Unturned
 
         #endregion
 
+        internal override void Save()
+        {
+            Configs.File.IniWriteValue("Config", "PublicAnnoying", (IsPublic) ? "true" : "false");
+        }
         internal override void Load()
         {
             if (String.IsNullOrEmpty(Configs.File.IniReadValue("Config", "PublicAnnoying")))
             {
-                Configs.File.IniWriteValue("Config", "PublicAnnoying", (Annoying.IsPublic) ? "true" : "false");
+                this.Save();
             }
 
             Annoying.IsPublic = Boolean.Parse(Configs.File.IniReadValue("Config", "PublicAnnoying"));

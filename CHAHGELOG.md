@@ -5,6 +5,8 @@ unturned-admin-tools
 
 * Multiple updates
 * Localizable strings
+* Debug test
+* Initial release
 
 ###Version 1.0.0.2
 

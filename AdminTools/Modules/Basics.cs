@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine;
 
 namespace Unturned
 {
@@ -69,7 +68,8 @@ namespace Unturned
 
         internal static void About(CommandArgs args)
         {
-            String text1 = String.Format("{0} v{1}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            System.Reflection.AssemblyName obj = System.Reflection.Assembly.GetExecutingAssembly().GetName();
+            String text1 = String.Format("{0} v{1}", obj.Name, obj.Version.ToString());
             Reference.Tell(args.sender.networkPlayer, text1);
         }
 

@@ -18,12 +18,16 @@ namespace Unturned
 
         #endregion
 
+        internal override void Save()
+        {
+            Configs.File.IniWriteValue("Modules", "RespawnVehicles", (UseRespawnVehicles) ? "true" : "false");
+            Configs.File.IniWriteValue("Timers", "RespawnVehicles", Interval.ToString());
+        }
         internal override void Load()
         {
             if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "RespawnVehicles")))
             {
-                Configs.File.IniWriteValue("Modules", "RespawnVehicles", "false");
-                Configs.File.IniWriteValue("Timers", "RespawnVehicles", "1350");
+                this.Save();
             }
 
             Vehicles.UseRespawnVehicles = Boolean.Parse(Configs.File.IniReadValue("Modules", "RespawnVehicles"));
@@ -121,7 +125,22 @@ namespace Unturned
 
         internal static void Sirens(CommandArgs args)
         {
-            sirens(args.Parameters[1].ToLower() == "on");
+            if (args.Parameters.Count > 0)
+            {
+                switch (args.Parameters[0].ToLower())
+                {
+                    case "on":
+                        sirens(true);
+                        break;
+                    case "off":
+                        sirens(false);
+                        break;
+                    default:
+                        break;
+                }
+
+                
+            }
         }
 
         #endregion

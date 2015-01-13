@@ -21,13 +21,17 @@ namespace Unturned
 
         #endregion
 
+        internal override void Save()
+        {
+            Configs.File.IniWriteValue("Modules", "AutoSaves", (UseAutoSave) ? "true" : "false");
+            Configs.File.IniWriteValue("Timers", "AutoSaves", "600");
+        }
         internal override void Load()
         {
 
             if (String.IsNullOrEmpty(Configs.File.IniReadValue("Modules", "AutoSaves")))
             {
-                Configs.File.IniWriteValue("Modules", "AutoSaves", "true");
-                Configs.File.IniWriteValue("Timers", "AutoSaves", "600");
+                this.Save();
             }
 
             AutoSaves.UseAutoSave = Boolean.Parse(Configs.File.IniReadValue("Modules", "AutoSaves"));
@@ -49,7 +53,7 @@ namespace Unturned
         internal override IEnumerable<Command> GetCommands()
         {
             List<Command> _return = new List<Command>();
-            _return.Add(new Command(PermissionLevel.Admin.ToInt(), SaveCommand, "save", "saveserver"));
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Save, "save", "saveserver"));
             return _return;
         }
         internal override String GetHelp()
@@ -64,11 +68,11 @@ namespace Unturned
 
         #region Commands
 
-        internal static void SaveCommand(CommandArgs args)
+        internal static void Save(CommandArgs args)
         {
             ThreadPool.QueueUserWorkItem(delegate(object param0)
             {
-                SaveServer();
+                save();
             }, null);
         }
 
@@ -80,11 +84,11 @@ namespace Unturned
         {
             ThreadPool.QueueUserWorkItem(delegate(object param0)
             {
-                SaveServer();
+                save();
             }, null);
         }
 
-        internal static void SaveServer()
+        internal static void save()
         {
             NetworkChat.sendAlert(Strings.Get("MOD","AutoSavesSaving"));
             try
@@ -99,7 +103,7 @@ namespace Unturned
                 {
                     try
                     {
-                        saveStructuresManually();
+                        savemanually();
                         Shared.Log(Strings.Get("MOD", "AutoSavesSavedStructures"));
                         break;
                     }
@@ -141,7 +145,7 @@ namespace Unturned
             Shared.Log(Strings.Get("MOD", "AutoSavesSaved"));
             NetworkChat.sendAlert(Strings.Get("MOD", "AutoSavesDone"));
         }
-        internal static void saveStructuresManually()
+        internal static void savemanually()
         {
             FieldInfo[] fields = typeof(SpawnStructures).GetFields();
             FieldInfo[] fields2 = typeof(ServerStructure).GetFields();
@@ -194,7 +198,7 @@ namespace Unturned
                     num2++;
                 }
             }
-            string text2 = sneakString(text);
+            string text2 = sneak(text);
             int num4 = (int)typeof(ServerSettings).GetFields()[0].GetValue(null);
             int num5 = (int)typeof(MasterSettings).GetFields()[0].GetValue(null);
             int num6 = (int)typeof(Savedata).GetFields()[6].GetValue(null);
@@ -207,12 +211,12 @@ namespace Unturned
 				"_",
 				array[num4],
 				"_",
-				sneakString(text),
+				sneak(text),
 				"_"
 			}));
             Shared.Log(String.Format(Strings.Get("MOD","AutoSavesSavedManual"),list.Count,num));
         }
-        internal static string sneakString(string structurestring)
+        internal static string sneak(string structurestring)
         {
             char[] array = structurestring.ToCharArray();
             string text = string.Empty;
