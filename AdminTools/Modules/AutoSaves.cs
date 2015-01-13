@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Timers;
 using UnityEngine;
@@ -53,7 +54,12 @@ namespace Unturned
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(Strings.Get("HLP", "SaveHelp"));
+
+
+            return sb.ToString();
         }
 
         #region Commands

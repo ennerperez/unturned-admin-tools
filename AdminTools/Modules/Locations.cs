@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace Unturned
@@ -105,23 +106,31 @@ namespace Unturned
             List<Command> _return = new List<Command>();
             _return.Add(new Command(PermissionLevel.All.ToInt(), GetPublic, "here", "h"));
             _return.Add(new Command(PermissionLevel.Moderator.ToInt(), GetPrivate, "where", "w"));
-            _return.Add(new Command(PermissionLevel.Admin.ToInt(), GetExternal, "at", "@")); // Use /@ <playername>
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), GetExternal, "at", "@")); 
             // ---> Dev's commands
             _return.Add(new Command(PermissionLevel.All.ToInt(), Get, "position", "p"));
-            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Set, "saveloc", "sloc")); // Use for remove a location /sloc -1
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Set, "saveloc", "sloc")); 
             return _return;
         }
         internal override String GetHelp()
         {
-            return null;
-        }
+            StringBuilder sb = new StringBuilder();
 
+            sb.AppendLine(Strings.Get("HLP", "LocationsGetPublic"));
+            sb.AppendLine(Strings.Get("HLP", "LocationsGetPrivate"));
+            sb.AppendLine(Strings.Get("HLP", "LocationsGetGetExternal"));
+            sb.AppendLine(Strings.Get("HLP", "LocationsGet"));
+            sb.AppendLine(Strings.Get("HLP", "LocationsSet"));
+            
+
+            return sb.ToString();
+        }
         #region Commands
 
         internal static void Get(CommandArgs args)
         {
             Vector3 _point = args.sender.position;
-            NetworkChat.sendAlert(String.Format("X:{0}, Y:{1}, Z:{2}", _point.x.ToString(), _point.y.ToString(), _point.z.ToString()));
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "LocationsGet"), _point.x.ToString(), _point.y.ToString(), _point.z.ToString()));
         }
         internal static void Set(CommandArgs args)
         {
@@ -156,7 +165,7 @@ namespace Unturned
             }
 
             AdminTools.Modules.OfType<Locations>().First().Save();
-            Reference.Tell(args.sender.networkPlayer, "Locations saved.");
+            Reference.Tell(args.sender.networkPlayer, (Strings.Get("MOD","LocationsLocationSave"));
 
         }
 

@@ -1,6 +1,7 @@
 ﻿using CommandHandler;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Unturned
@@ -25,7 +26,16 @@ namespace Unturned
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(Strings.Get("HLP", "BasicsClearChatHelp"));
+            sb.AppendLine(Strings.Get("HLP", "BasicsOnlinePlayerHelp"));
+            sb.AppendLine(Strings.Get("HLP", "BasicsGameTimeHelp"));
+            sb.AppendLine(Strings.Get("HLP", "BasicsRealTimeHelp"));
+            sb.AppendLine(Strings.Get("HLP", "BasicsRestartHelp"));
+            sb.AppendLine(Strings.Get("HLP", "BasicsAboutHelp"));
+
+            return sb.ToString();
         }
 
         #region Commands
@@ -39,15 +49,16 @@ namespace Unturned
         }
         internal static void OnlinePlayers(CommandArgs args)
         {
-            NetworkChat.sendAlert(String.Format("There are {0} players online.", UserList.NetworkUsers.Count));
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD","BasicsOnlinePlayers"), UserList.NetworkUsers.Count));
+        }
+
+        internal static void RealTime(CommandArgs args)
+        {
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD","BasicsRealTime"), DateTime.Now.ToShortTimeString()));
         }
         internal static void GameTime(CommandArgs args)
         {
-            NetworkChat.sendAlert(String.Format("The time is {0}", Sun.getTime()));
-        }
-        internal static void RealTime(CommandArgs args)
-        {
-            NetworkChat.sendAlert(String.Format("The real time is {0}", DateTime.Now.ToShortTimeString()));
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "BasicsGameTime"), Sun.getTime()));
         }
         internal static void Restart(CommandArgs args)
         {

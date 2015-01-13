@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System.Text;
 
 namespace Unturned
 {
@@ -103,14 +104,22 @@ namespace Unturned
         {
             List<Command> _return = new List<Command>();
             _return.Add(new Command(PermissionLevel.Owner.ToInt(), List, "getkits", "ks", "kits"));
-            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Get, "kit", "k")); // Use /k <kitname>
-            _return.Add(new Command(PermissionLevel.Admin.ToInt(), AddTo, "addkit", "ka")); // Use /ka <kitname> <[itemid]>
-            _return.Add(new Command(PermissionLevel.Owner.ToInt(), Set, "setkit", "ks")); // Use /ks <kitname> <[itemid1]> <[itemid2]> <[itemid3]>
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), Get, "kit", "k")); 
+            _return.Add(new Command(PermissionLevel.Admin.ToInt(), AddTo, "addkit", "ka")); 
+            _return.Add(new Command(PermissionLevel.Owner.ToInt(), Set, "setkit", "ks")); 
             return _return;
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(Strings.Get("HLP", "KitsList"));
+            sb.AppendLine(Strings.Get("HLP", "KitsGet"));
+            sb.AppendLine(Strings.Get("HLP", "KitsAdd"));
+            sb.AppendLine(Strings.Get("HLP", "KitsSet"));
+
+
+            return sb.ToString();
         }
         
         #region Commands
@@ -130,11 +139,11 @@ namespace Unturned
                 if (userKitsList.Count > 0)
                 {
                     userKits = string.Join(", ", userKitsList.ToArray());
-                    Reference.Tell(args.sender.networkPlayer, String.Format("You can use those kits: {0}. Use /kit <name>", userKits));
+                    Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "KitsUserKits"), userKits));
                 }
                 else
                 {
-                    Reference.Tell(args.sender.networkPlayer, "You don't have kits set yet.");
+                    Reference.Tell(args.sender.networkPlayer, Strings.Get("MOD", "KitsNotSet"));
                 }
             }
         }
@@ -151,11 +160,11 @@ namespace Unturned
                 set(args.sender.steamid, kitname, itemsID.ToArray());
                 if (itemsID.Count > 0)
                 {
-                    Reference.Tell(args.sender.networkPlayer, String.Format("Kit '{0}' was set.", kitname));
+                    Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD","KitsSet"), kitname));
                 }
                 else
                 {
-                    Reference.Tell(args.sender.networkPlayer, String.Format("Kit '{0}' was deleted.", kitname));
+                    Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD", "KitsDelete"), kitname));
                 }
 
             }
@@ -168,7 +177,7 @@ namespace Unturned
                 int itemid = int.Parse(args.Parameters[1]);
                 addTo(args.sender.steamid, kitname, itemid);
 
-                Reference.Tell(args.sender.networkPlayer, String.Format("'{0}' was added to kit '{1}'.", ItemName.getName(itemid), kitname));
+                Reference.Tell(args.sender.networkPlayer, String.Format(Strings.Get("MOD","KitsAdd"), ItemName.getName(itemid), kitname));
 
             }
         }

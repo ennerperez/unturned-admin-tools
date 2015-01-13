@@ -1,6 +1,7 @@
 ﻿using CommandHandler;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Timers;
 using UnityEngine;
 
@@ -51,21 +52,19 @@ namespace Unturned
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(Strings.Get("HLP", "ItemsSpawn"));
+            sb.AppendLine(Strings.Get("HLP", "ItemsReset"));
+            sb.AppendLine(Strings.Get("HLP", "ItemsDelay"));
+
+
+            return sb.ToString();
         }
 
         #region Commands
 
-        internal static void Reset(CommandArgs args)
-        {
-            SpawnItems.reset();
-            NetworkChat.sendAlert(String.Format("{0} has respawned all items.", args.sender.name));
-        }
-        internal static void SetDelay(CommandArgs args)
-        {
-            String seconds = args.Parameters[0];
-            setItemsDelay(Convert.ToInt32(seconds));
-        }
+
         internal static void Spawn(CommandArgs args)
         {
             int itemid = Convert.ToInt32(args.Parameters[0]);
@@ -78,6 +77,17 @@ namespace Unturned
                 SpawnItems.spawnItem(itemid, 1, location);
 
         }
+        internal static void Reset(CommandArgs args)
+        {
+            SpawnItems.reset();
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "ItemsReset"), args.sender.name));
+        }
+        internal static void SetDelay(CommandArgs args)
+        {
+            String seconds = args.Parameters[0];
+            setItemsDelay(Convert.ToInt32(seconds));
+        }
+
 
         #endregion
 

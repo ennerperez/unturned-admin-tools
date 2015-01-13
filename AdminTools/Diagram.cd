@@ -3,7 +3,7 @@
   <Class Name="Unturned.AdminTools">
     <Position X="8.25" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAYAAAAAACAAAABAAAIIAAAQAAAAAAAAAACAAAAAAAA=</HashCode>
+      <HashCode>AAQAAAAAACAAAABAAAIIAAAQAAAAAAAAAACAAAAAAAA=</HashCode>
       <FileName>AdminTools.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -168,6 +168,13 @@
     <TypeIdentifier>
       <HashCode>AAAAgIAAAABAAAAAAAAAAAAAAAAAAEAAgAAAAABECAA=</HashCode>
       <FileName>Modules\Module.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unturned.Strings">
+    <Position X="3" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAgAAAABIAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strings.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="Unturned.Rectangle" Collapsed="true">

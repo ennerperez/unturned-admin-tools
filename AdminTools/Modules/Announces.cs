@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Timers;
 
 namespace Unturned
@@ -88,7 +89,11 @@ namespace Unturned
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+            
+            sb.AppendLine(Strings.Get("HLP", "AnnounceHelp"));
+
+            return sb.ToString();
         }
 
         #region Commands
