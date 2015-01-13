@@ -1,6 +1,11 @@
 unturned-admin-tools
 ====================
 
+###Version 1.0.0.3
+
+* Multiple updates
+* Localizable strings
+
 ###Version 1.0.0.2
 
 * Localizable strings

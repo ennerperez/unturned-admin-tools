@@ -165,7 +165,7 @@ namespace Unturned
             }
 
             AdminTools.Modules.OfType<Locations>().First().Save();
-            Reference.Tell(args.sender.networkPlayer, (Strings.Get("MOD","LocationsLocationSave"));
+            Reference.Tell(args.sender.networkPlayer, (Strings.Get("MOD","LocationsLocationSave")));
 
         }
 

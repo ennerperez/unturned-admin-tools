@@ -39,7 +39,7 @@ namespace Unturned
         }
 
         #region Commands
-
+        
         internal static void ClearChat(CommandArgs args)
         {
             for (int i = 0; i < 5; i++)
