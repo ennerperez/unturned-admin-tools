@@ -3,8 +3,8 @@ unturned-admin-tools
 
 ###Version 1.0.0.3
 
-* Multiple updates
-* Localizable strings
+* Multiples updates
+* More localizable strings
 * Debug test
 * Initial release
 
