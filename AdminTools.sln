@@ -28,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 		Resources\Capture_003.jpg = Resources\Capture_003.jpg
 		Resources\Capture_004.jpg = Resources\Capture_004.jpg
 		Resources\Capture_005.jpg = Resources\Capture_005.jpg
+		Resources\dedicated.cmd = Resources\dedicated.cmd
 		Resources\Logo.png = Resources\Logo.png
 	EndProjectSection
 EndProject
