@@ -3,7 +3,7 @@
   <Class Name="Unturned.AdminTools">
     <Position X="8.25" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAAAACAAAABAAAAIAAAQAAAAAAAAAACAAAAAAAA=</HashCode>
+      <HashCode>AAYAAAAAACAAAABAAAIIAAAQAAAAAAAAAACAAAAAAAA=</HashCode>
       <FileName>AdminTools.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -31,7 +31,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Unturned.Extensions">
-    <Position X="8.25" Y="9.25" Width="1.5" />
+    <Position X="10" Y="8.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAIAAAAAAgAAAAAAAA=</HashCode>
       <FileName>Extensions.cs</FileName>
@@ -54,7 +54,7 @@
   <Class Name="Unturned.Annoying" Collapsed="true">
     <Position X="8.25" Y="1" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABBIAAAAACBAAAAAAAAIAAAAMAAAAAAAgAAAAAAACAA=</HashCode>
+      <HashCode>ABBIgAAAACBAAAAAAAAIAAAAMCAAAAAAgAAAAAAACAA=</HashCode>
       <FileName>Modules\Annoying.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -62,7 +62,7 @@
     <Position X="4.75" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAiAAAAAggAAAEAAIAAAAAAAAAAABAgAQAAAAECAA=</HashCode>
-      <FileName>Modules\Ban.cs</FileName>
+      <FileName>Modules\Bans.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Unturned.Basics" Collapsed="true">
@@ -82,7 +82,7 @@
   <Class Name="Unturned.Homes" Collapsed="true">
     <Position X="4.75" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QAAAgAAAAgAAAIAAAAAAAAgAAAQAAEAEgAAAAEBACAA=</HashCode>
+      <HashCode>QAAAgAAAEgAAAIAAAAAAAAgAAAQAAEAEgAAAAEBACAA=</HashCode>
       <FileName>Modules\Homes.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -117,7 +117,7 @@
   <Class Name="Unturned.Players" Collapsed="true">
     <Position X="6.5" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAAEAAAACAAAEAAAAABAAAAAAAgAAgAAAACAA=</HashCode>
+      <HashCode>EAAAABAAEsAAAADAAEAAAABABAAEACQAgAAgAAAACAA=</HashCode>
       <FileName>Modules\Players.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -131,28 +131,28 @@
   <Class Name="Unturned.Teleports" Collapsed="true">
     <Position X="10" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAEAAAAAAAAAAAAAgAAAAAAAIAAAAgIAQAAAACAA=</HashCode>
+      <HashCode>AAAAAECAEAAAAAAAAAAgAAAAAACAAAAAgAAAAAAACAA=</HashCode>
       <FileName>Modules\Teleports.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Unturned.Vehicles" Collapsed="true">
     <Position X="4.75" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAgAEAACDAAAAAAIEAAEAABCBAAAQIgAAAAAAECAA=</HashCode>
+      <HashCode>AAAAgAEAACDAAAAgAIEAIEABBCBAAAQIgAAACAAECAA=</HashCode>
       <FileName>Modules\Vehicles.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Unturned.Whitelists" Collapsed="true">
     <Position X="6.5" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAgAAAAABCAIAAAAAACACAAAAAAEAggAAwEABASAA=</HashCode>
+      <HashCode>AAAAgAAAAgBDAAAAAAAAgACAAAAAAEAggAAAEABCSAA=</HashCode>
       <FileName>Modules\Whitelists.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Unturned.Zombies" Collapsed="true">
     <Position X="8.25" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAEAAAAAAAAEAAAAABAAAAAAAgAACAAAACAA=</HashCode>
+      <HashCode>AAAAAAAAAEAAAABAAAEAAAABBAAAAAAAggAAAAIACAA=</HashCode>
       <FileName>Modules\Zombies.cs</FileName>
     </TypeIdentifier>
   </Class>

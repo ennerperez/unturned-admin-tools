@@ -1,6 +1,7 @@
 ﻿using CommandHandler;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Unturned
@@ -22,7 +23,11 @@ namespace Unturned
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(Strings.Get("HLP", "WarHelp"));
+
+            return sb.ToString();
         }
 
         #region Commands
@@ -32,16 +37,21 @@ namespace Unturned
             if (IsWarOn)
             {
                 IsWarOn = !IsWarOn;
-                NetworkChat.sendAlert("War is over.");
+                NetworkChat.sendAlert(Strings.Get("MOD", "WarOver"));
                 return;
             }
 
             IsWarOn = !IsWarOn;
-
-            NetworkChat.sendAlert("War is comming...");
+            NetworkChat.sendAlert(Strings.Get("MOD", "WarComing"));
 
             try
             {
+
+                string warmode = "ninja";
+                if (args.Parameters.Count > 0)
+                {
+                    warmode = args.ParametersAsString.Trim().ToLower();
+                }
 
                 Items.Reset(args);
                 Vehicles.Respawn(args);
@@ -50,7 +60,7 @@ namespace Unturned
 
                 for (int i = 0; i < 5; i++)
                 {
-                    NetworkChat.sendAlert(string.Format("War start in {0}", 5 - i));
+                    NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "WarCount"), 5 - i));
                     System.Threading.Thread.Sleep(1000);
                 }
 
@@ -67,30 +77,32 @@ namespace Unturned
                     int _secondary;
                     int _ammo;
 
-                    if (System.DateTime.Parse(Sun.getTime()).Hour > 12)
+                    switch (warmode)
                     {
-                        // Green
-                        _backpack = 2004;
-                        _hat = 11;
-                        _pants = 5017;
-                        _shirt = 4017;
-                        _vest = 3002;
-                        _primary = 7014;
-                        _ammo = 25001;
-                        _secondary = 8016;
+                        case "green":
+                            // Green
+                            _backpack = 2004;
+                            _hat = 11;
+                            _pants = 5017;
+                            _shirt = 4017;
+                            _vest = 3002;
+                            _primary = 7014;
+                            _ammo = 25001;
+                            _secondary = 8016;
+                            break;
+                        default:
+                            // Ninja
+                            _backpack = 2005;
+                            _hat = 12;
+                            _pants = 5018;
+                            _shirt = 4018;
+                            _vest = 3003;
+                            _primary = 7007;
+                            _ammo = 25001;
+                            _secondary = 8015;
+                            break;
                     }
-                    else
-                    {
-                        // Ninja
-                        _backpack = 2005;
-                        _hat = 12;
-                        _pants = 5018;
-                        _shirt = 4018;
-                        _vest = 3003;
-                        _primary = 7007;
-                        _ammo = 25001;
-                        _secondary = 8015;
-                    }
+                                        
 
                     Inventory inventory = item.player.gameObject.GetComponent<Inventory>();
                     inventory.drop();
@@ -102,8 +114,7 @@ namespace Unturned
                     cloth.changeVest(_vest);
                     cloth.saveAllClothing();
                     cloth.loadAllClothing();
-
-
+                    
                     inventory.tryAddItem(_primary, 1);
                     inventory.tryAddItem(_ammo, 30);
                     inventory.tryAddItem(_secondary, 1);
@@ -112,18 +123,18 @@ namespace Unturned
                     inventory.tryAddItem(24000, 1);
 
                 }
+
+                NetworkChat.sendAlert(Strings.Get("MOD", "WarStart"));
+
             }
             catch (Exception ex)
             {
-                Shared.Log(ex.ToString());
-
-            }
-
-            NetworkChat.sendAlert("This is Sparta!.");
+                Shared.Log(ex.Message);
+            }          
 
         }
 
         #endregion
-
+        
     }
 }

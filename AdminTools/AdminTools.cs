@@ -12,7 +12,9 @@ namespace Unturned
 
         #region TOP: global variables are initialized here
 
-        internal const string AdminPath = "Unturned_Data/Managed/mods/Admin";
+        internal const string ModsPath = "Unturned_Data/Managed/mods";
+        internal const string AdminPath = ModsPath + "/Admin";
+                
         internal static List<Module> Modules = new List<Module>();
         internal static int LoadedModules;
 

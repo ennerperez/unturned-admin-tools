@@ -130,10 +130,53 @@ namespace Unturned
         }
         private static void home(BetterNetworkUser user)
         {
-            Teleports.userTo(user, PlayerHomes[user.steamid]);
+            userto(user, PlayerHomes[user.steamid]);
         }
 
         #endregion
+
+        private static void userto(BetterNetworkUser user, Vector3 target)
+        {
+            try
+            {
+                user.position = target;
+                user.player.gameObject.GetComponent<Life>().networkView.RPC("tellStatePosition", RPCMode.All, new object[] { target, user.rotation });
+                user.player.gameObject.GetComponent<NetworkInterpolation>().tellStatePosition_Pizza(target, user.rotation);
+
+                Network.SetReceivingEnabled(user.networkPlayer, 0, false);
+
+                System.Threading.Timer timer;
+                timer = new System.Threading.Timer(obj =>
+                {
+                    Network.SetReceivingEnabled(user.networkPlayer, 0, true);
+                }, null, 2000, System.Threading.Timeout.Infinite);
+            }
+            catch (Exception ex)
+            {
+                Shared.Log(ex.Message);
+            }
+        }
+        private static void userto(BetterNetworkUser user, Vector3 targetposition, Quaternion targetrotation)
+        {
+            try
+            {
+                user.position = targetposition;
+                user.player.gameObject.GetComponent<Life>().networkView.RPC("tellStatePosition", RPCMode.All, new object[] { targetposition, targetrotation });
+                user.player.gameObject.GetComponent<NetworkInterpolation>().tellStatePosition_Pizza(targetposition, targetrotation);
+
+                Network.SetReceivingEnabled(user.networkPlayer, 0, false);
+
+                System.Threading.Timer timer;
+                timer = new System.Threading.Timer(obj =>
+                {
+                    Network.SetReceivingEnabled(user.networkPlayer, 0, true);
+                }, null, 2000, System.Threading.Timeout.Infinite);
+            }
+            catch (Exception ex)
+            {
+                Shared.Log(ex.Message);
+            }
+        }
 
     }
 }

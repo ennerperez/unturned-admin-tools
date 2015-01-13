@@ -28,29 +28,17 @@ namespace Unturned
 
             if (Configs.IsLoaded) { return; }
 
+#if DEBUG
+            Configs.Developer = true;
+            Configs.Logging = true;
+            Configs.Console = true;
+            Save();
+#endif
+
             Strings.Load();
 
             Directory.CreateDirectory(AdminTools.AdminPath);
-            if (!System.IO.File.Exists(Configs.Source)) { Save(); }
-
-
-            ////things that need to be added to existing files
-            //if (Configs.File.IniReadValue("Config", "WhitelistKickMessages").Equals(""))
-            //{
-            //    Configs.File.IniWriteValue("Config", "WhitelistKickMessages", "true");
-            //}
-            //if (Configs.File.IniReadValue("Security", "Console").Equals(""))
-            //{
-            //    Configs.File.IniWriteValue("Security", "Console", "true");
-            //}
-            //if (Configs.File.IniReadValue("Security", "Password").Equals(""))
-            //{
-            //    Configs.File.IniWriteValue("Security", "Password", randomString(8));
-            //}
-            //if (Configs.File.IniReadValue("Security", "Confirmation").Equals(""))
-            //{
-            //    Configs.File.IniWriteValue("Security", "Confirmation", "false");
-            //}
+            if (!System.IO.File.Exists(Configs.Source)) { Save(); }          
 
             Configs.Developer = Boolean.Parse(Configs.File.IniReadValue("Config", "Developer"));
             Configs.Logging = Boolean.Parse(Configs.File.IniReadValue("Config", "Logging"));
@@ -64,7 +52,6 @@ namespace Unturned
             Configs.File.IniWriteValue("Config", "Developer", (Configs.Developer) ? "true" : "false");
             Configs.File.IniWriteValue("Config", "Logging", (Configs.Logging) ? "true" : "false");
             
-
             Configs.File.IniWriteValue("Security", "Console", (Configs.Console) ? "true" : "false");
             Configs.File.IniWriteValue("Security", "Password", Shared.RandomString(8));
             Configs.File.IniWriteValue("Security", "Confirmation", (Configs.Confirmation) ? "true" : "false");

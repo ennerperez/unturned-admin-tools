@@ -1,6 +1,7 @@
 ﻿using CommandHandler;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Unturned
@@ -9,6 +10,8 @@ namespace Unturned
     {
 
         #region TOP: global variables are initialized here
+
+
 
         #endregion
 
@@ -23,7 +26,14 @@ namespace Unturned
         }
         internal override String GetHelp()
         {
-            return null;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(Strings.Get("HLP", "ZombieHelp"));
+            sb.AppendLine(Strings.Get("HLP", "ZombiesRespawnHelp"));
+            sb.AppendLine(Strings.Get("HLP", "ZombiesKillsHelp"));
+            sb.AppendLine(Strings.Get("HLP", "ZombieLandHelp"));
+
+            return sb.ToString();
         }
 
         #region Commands
@@ -34,69 +44,116 @@ namespace Unturned
             Quaternion rotation = args.sender.rotation;
             Vector3 newPos = new Vector3(location[0] + 1, location[1] + 1, location[2] - 1);
 
-            Zombie[] mapZombies = UnityEngine.Object.FindObjectsOfType(typeof(Zombie)) as Zombie[];
-
-            int random = UnityEngine.Random.Range(0, mapZombies.Length);
-            Zombie randomZombie = mapZombies[random];
-
-            randomZombie.transform.position = newPos;
+            spawn(newPos);
 
         }
         internal static void Respawn(CommandArgs args)
         {
             SpawnAnimals.reset();
-            NetworkChat.sendAlert(String.Format("{0} has re-spawned all zombies.", args.sender.name));
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "ZombiesRespawn"), args.sender.name));
         }
-
         internal static void Kill(CommandArgs args)
         {
-            Zombie[] Zombies = UnityEngine.Object.FindObjectsOfType(typeof(Zombie)) as Zombie[];
-            foreach (Zombie Zombie in Zombies)
-            {
-                Zombie.damage(500);
-            }
-            NetworkChat.sendAlert(String.Format("{0} has killed {1} zombies.", args.sender.name, Zombies.Length));
+            int kills = kill();
+            NetworkChat.sendAlert(String.Format(Strings.Get("MOD", "ZombiesKills"), args.sender.name, kills));
         }
-
         internal static void Land(CommandArgs args)
         {
 
-            SpawnAnimals.reset();
-            Zombie[] mapZombies = UnityEngine.Object.FindObjectsOfType(typeof(Zombie)) as Zombie[];
-            BetterNetworkUser[] mapUsers = UserList.users.ToArray();
-
-            int amount = (int)Math.Round((decimal)mapZombies.Length / mapUsers.Length);
+            int amount = 0;
             if (args.Parameters.Count > 0) { amount = int.Parse(args.Parameters[0]); }
 
-            // Security margin
-            if ((amount > 20) || (amount > mapZombies.Length)) { amount = 20; }
-
-            foreach (BetterNetworkUser item in mapUsers)
+            if (land(amount))
             {
-
-                Vector3 location = item.position;
-                Quaternion rotation = item.rotation;
-
-                foreach (Zombie itemz in mapZombies)
-                {
-
-                    int random = UnityEngine.Random.Range(10, 15);
-                    Vector3 newPos = new Vector3(location[0] + random, location[1] + 5, location[2] - random);
-
-                    itemz.transform.position = newPos;
-                    amount--;
-                    if (amount == 0) { break; }
-                }
-
-                amount = (int)Math.Round((decimal)mapZombies.Length / mapUsers.Length);
-                if ((amount > 20) || (amount > mapZombies.Length)) { amount = 20; }
-
+                NetworkChat.sendAlert(string.Format(Strings.Get("MOD", "ZombieLand"), args.sender.name));
             }
-            NetworkChat.sendAlert(string.Format("{0} opened the hell's gates.", args.sender.name));
 
         }
 
         #endregion
+
+        private static void spawn(Vector3 pos)
+        {
+            try
+            {
+                Zombie[] mapZombies = UnityEngine.Object.FindObjectsOfType(typeof(Zombie)) as Zombie[];
+
+                int random = UnityEngine.Random.Range(0, mapZombies.Length);
+                Zombie randomZombie = mapZombies[random];
+
+                randomZombie.transform.position = pos;
+            }
+            catch (Exception ex)
+            {
+                Shared.Log(ex.Message);
+            }
+
+        }
+        private static int kill()
+        {
+            try
+            {
+                Zombie[] mapZombies = UnityEngine.Object.FindObjectsOfType(typeof(Zombie)) as Zombie[];
+                int counter = 0;
+                foreach (Zombie Zombie in mapZombies)
+                {
+                    Zombie.damage(500);
+                    counter++;
+                }
+                return counter;
+            }
+            catch (Exception ex)
+            {
+                Shared.Log(ex.Message);
+                return 0;
+            }
+        }
+        private static bool land(int amount = 0)
+        {
+            try
+            {
+
+                SpawnAnimals.reset();
+
+                Zombie[] mapZombies = UnityEngine.Object.FindObjectsOfType(typeof(Zombie)) as Zombie[];
+                BetterNetworkUser[] mapUsers = UserList.users.ToArray();
+
+                if (amount == 0) { amount = (int)Math.Round((decimal)mapZombies.Length / mapUsers.Length); }
+
+                // Security margin
+                if ((amount > 20) || (amount > mapZombies.Length)) { amount = 20; }
+
+                foreach (BetterNetworkUser item in mapUsers)
+                {
+
+                    Vector3 location = item.position;
+                    Quaternion rotation = item.rotation;
+
+                    foreach (Zombie itemz in mapZombies)
+                    {
+
+                        int random = UnityEngine.Random.Range(10, 15);
+                        Vector3 newPos = new Vector3(location[0] + random, location[1] + 5, location[2] - random);
+
+                        itemz.transform.position = newPos;
+                        amount--;
+                        if (amount == 0) { break; }
+                    }
+
+                    amount = (int)Math.Round((decimal)mapZombies.Length / mapUsers.Length);
+                    if ((amount > 20) || (amount > mapZombies.Length)) { amount = 20; }
+
+                }
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                Shared.Log(ex.Message);
+                return false;
+            }
+        }
 
     }
 }

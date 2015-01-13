@@ -73,6 +73,69 @@ namespace Unturned
             Strings.File.IniWriteValue("MOD", "BansUnBanFailed", "Could not find {0} in the list of banned players.");
             Strings.File.IniWriteValue("HLP", "BansBanReasonHelp", "Reason for banning {0} ?  /reason <reason> to ban.");
 
+            Strings.File.IniWriteValue("MOD", "PlayerNotFound", "Player was not found.");
+            Strings.File.IniWriteValue("MOD", "PlayerRespawnDefault", "You has been re-spawned.");
+            Strings.File.IniWriteValue("MOD", "PlayersRespawn", "{0} has re-spawned {0} payers.");
+            Strings.File.IniWriteValue("MOD", "PlayerSkillDefault", "You has been blessed, you learned {0} skill points.");
+            Strings.File.IniWriteValue("MOD", "PlayerSkilled", "You skilled {0}.");
+            Strings.File.IniWriteValue("MOD", "PlayersBlessed", "Players has been blessed, {0} players was learned {1} skill points.");
+            Strings.File.IniWriteValue("MOD", "PlayerKillDefault", "You died of retardedness.");
+            Strings.File.IniWriteValue("MOD", "PlayerKilled", "You killed {0}.");
+            Strings.File.IniWriteValue("MOD", "PlayersGenocide", "This was a genocide, {0} players was killed.");
+            Strings.File.IniWriteValue("MOD", "PlayersSacrifice", "This was a sacrifice, {0} players was killed.");
+            Strings.File.IniWriteValue("MOD", "PlayerHealDefault", "Lord Jesus Christ heal you body and soul.");
+            Strings.File.IniWriteValue("MOD", "PlayerHealed", "You healed {0}.");
+            Strings.File.IniWriteValue("MOD", "PlayersMiracle", "This was a miracle!, {0} players was healed.");
+            Strings.File.IniWriteValue("MOD", "PlayerPromoted", "You have been promoted to level {0}.");
+            Strings.File.IniWriteValue("MOD", "PlayerDemoted", "You have been demoted to level {0}.");
+            Strings.File.IniWriteValue("MOD", "PlayersPromote", "{0} has been promoted to level {1}");
+            Strings.File.IniWriteValue("MOD", "PlayersDemote", "{0} has been demoted to level {1}");
+            Strings.File.IniWriteValue("HLP", "PlayersRespawnHelp", "[respawn,pr] <[playername,all,others]> -> Re-spawn specific player, all or only others.");
+            Strings.File.IniWriteValue("HLP", "PlayersSkillHelp", "[skill,ps] <[playername,all,others]> <[amount]> -> Learn experience points to specific player, all or only others.");
+            Strings.File.IniWriteValue("HLP", "PlayersKillHelp", "[kill,pk] <[playername,all,others]> -> Kill specific player, all or only others.");
+            Strings.File.IniWriteValue("HLP", "PlayersHealHelp", "[heal,ph] <[playername,all,others]> -> Heal specific player, all or only others.");
+            Strings.File.IniWriteValue("HLP", "PlayersPromoteHelp","[promote] <playername> -> Promote player level.");
+            Strings.File.IniWriteValue("HLP", "PlayersDemoteHelp", "[demote] <playername> -> Demote player level.");
+
+            Strings.File.IniWriteValue("MOD", "WarComing", "War is coming...");
+            Strings.File.IniWriteValue("MOD", "WarCount", "War start in {0}.");
+            Strings.File.IniWriteValue("MOD", "WarStart", "This is Sparta!.");
+            Strings.File.IniWriteValue("MOD", "WarOver", "War is over.");
+            Strings.File.IniWriteValue("HLP", "WarHelp", "[war] <[ninja,green]> -> Unturned war mode.");
+
+            Strings.File.IniWriteValue("HLP", "TeleportsToHelp", "[tpcoord,tc,tpto] <x> <y> <[z]> -> Teleports to coordinate based point.");
+            Strings.File.IniWriteValue("HLP", "TeleportsToPlayerHelp", "[tplayer,tp] <playername> -> Teleports to player location.");
+            Strings.File.IniWriteValue("HLP", "TeleportsToMeHelp", "[tptome,tm] <playername> -> Teleports player to you location.");
+            Strings.File.IniWriteValue("HLP", "TeleportsToMeAllHelp", "[tpall,ta] -> Teleports all players to you location.");
+
+            Strings.File.IniWriteValue("MOD", "Vehicle", "Creating {0}.");
+            Strings.File.IniWriteValue("MOD", "VehiclesRespawn", "Re-spawning {0} vehicles in 3 seconds...");
+            Strings.File.IniWriteValue("MOD", "VehiclesRepairs", "{0} has repaired {1} vehicles.");
+            Strings.File.IniWriteValue("MOD", "VehiclesRefuel", "{0} has refueled {1} vehicles.");
+            Strings.File.IniWriteValue("MOD", "VehiclesDestroy", "{0} has destroyed {1} vehicles.");
+            Strings.File.IniWriteValue("HLP", "Vehicle", "[vehicle,car,v] <[cartype]> -> Spawn a vehicle nearby you location.");
+            Strings.File.IniWriteValue("HLP", "VehiclesRespawn", "[respawnvehicles,vs] -> Re-spawn vehicles.");
+            Strings.File.IniWriteValue("HLP", "VehiclesRepair", "[repairvehicles,vr,repair] -> Repair vehicles.");
+            Strings.File.IniWriteValue("HLP", "VehiclesRefuel", "[refuelvehicles,vf,refuel] -> Refuel vehicles.");
+            Strings.File.IniWriteValue("HLP", "VehiclesDestroy", "[destroyvehicles,vd] -> Destroy vehicles.");
+            Strings.File.IniWriteValue("HLP", "VehiclesSirens", "[sirens] <[on,off]> -> Turn on/off vehicles sirens.");
+                        
+            Strings.File.IniWriteValue("MOD", "WhitelistOn", "Whitelist enabled.");
+            Strings.File.IniWriteValue("MOD", "WhitelistOff", "Whitelist disabled.");
+            Strings.File.IniWriteValue("MOD", "WhitelistPlayerNotFound", "That player is either not on-line or you provided a bad SteamID.");
+            Strings.File.IniWriteValue("MOD", "WhitelistAdded", "Added {0} ({1}) to the whitelist.");
+            Strings.File.IniWriteValue("MOD", "WhitelistRemoved", "Removed {0} ({1}) from the whitelist.");
+            Strings.File.IniWriteValue("MOD", "WhitelistNotWhitelisted", "You are not whitelisted on this server!");
+            Strings.File.IniWriteValue("HLP", "WhitelistHelp", "[whitelist] [on,off,add,del] <playername> ->Turn on/off and add/delete players from whitelist.");
+
+            Strings.File.IniWriteValue("MOD", "ZombiesRespawn", "{0} has re-spawned all zombies.");
+            Strings.File.IniWriteValue("MOD", "ZombiesKills", "{0} has killed {1} zombies.");
+            Strings.File.IniWriteValue("MOD", "ZombieLand", "{0} opened the hell's gates.");
+            Strings.File.IniWriteValue("HLP", "ZombieHelp", "[zombie,z] -> Spawn a random zombie.");
+            Strings.File.IniWriteValue("HLP", "ZombiesRespawnHelp", "[respawnzombies,zr] -> Re-spawn zombies.");
+            Strings.File.IniWriteValue("HLP", "ZombiesKillsHelp", "[killzombies,zk] -> Kills zombies.");
+            Strings.File.IniWriteValue("HLP", "ZombieLandHelp", "[zombieland,zl] <[#]> -> Spawn an amount of zombies nearby every player. By default 20.");
+
         }
 
         public static string Get(string section, string key)
