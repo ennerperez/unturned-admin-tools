@@ -24,6 +24,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{AA608F04-5728-49AE-A363-0B37550B7B92}"
 	ProjectSection(SolutionItems) = preProject
 		Resources\Capture_001.jpg = Resources\Capture_001.jpg
+		Resources\Capture_002.jpg = Resources\Capture_002.jpg
 		Resources\Logo.png = Resources\Logo.png
 	EndProjectSection
 EndProject
